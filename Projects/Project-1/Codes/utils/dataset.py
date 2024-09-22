@@ -43,3 +43,14 @@ class GSVDataLoader:
                 labels.append(label_map[label])
         self.train_ds = np.array(train_ds)
         self.labels = np.array(labels)
+
+    def load_test(self):
+        test_ds = []
+        for img in os.listdir(self.test_dir):
+            img_path = os.path.join(self.test_dir, img)
+            if not img_path.endswith(".jpg"):
+                continue
+            image = Image.open(img_path)
+            image = np.array(image)
+            test_ds.append(image)
+        self.test_ds = np.array(test_ds)
