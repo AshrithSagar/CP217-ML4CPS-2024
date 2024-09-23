@@ -26,7 +26,6 @@ class ModelTrainer:
         y_pred = self.model.predict(images)
         self.train_acc = accuracy_score(labels, y_pred)
         print(f"Train Accuracy: {self.train_acc:.4f}")
-        return self.train_acc
 
     def get_test_pred(self, images):
         self.test_pred = self.model.predict(images)

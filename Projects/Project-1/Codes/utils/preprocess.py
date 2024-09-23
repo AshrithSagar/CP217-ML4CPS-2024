@@ -20,4 +20,4 @@ def sift_preprocess(images):
     for image in images:
         kp, des = sift.detectAndCompute(image, None)
         sift_features.append(des)
-    return np.array(sift_features)
+    return sift_features
