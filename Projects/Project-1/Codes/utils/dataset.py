@@ -54,3 +54,8 @@ class GSVDataLoader:
             image = np.array(image)
             test_ds.append(image)
         self.test_ds = np.array(test_ds)
+
+    def select_subset(self, num_samples):
+        indices = np.random.choice(self.train_ds.shape[0], num_samples, replace=False)
+        self.train_ds = self.train_ds[indices]
+        self.labels = self.labels[indices]
