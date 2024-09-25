@@ -64,6 +64,5 @@ class ModelCrossValidator:
             filename = f"{self.dest_dir}/model_fold_{fold}.joblib"
             joblib.dump(fold_model, filename)
 
-        mean_accuracy = np.mean(self.acc_scores)
-        print(f"Mean Cross-Validation Accuracy: {mean_accuracy:.4f}")
-        return mean_accuracy
+        self.mean_acc = np.mean(self.acc_scores)
+        print(f"Mean Cross-Validation Accuracy: {self.mean_acc:.4f}")
