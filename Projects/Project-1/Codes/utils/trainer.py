@@ -49,13 +49,13 @@ class ModelCrossValidator:
         )
         os.makedirs(dest_dir, exist_ok=True)
 
-    def fit(self, images, labels, verbose=False):
+    def fit(self, images, labels):
         for fold, (train_index, val_index) in enumerate(self.skf.split(images, labels)):
             X_train, X_val = images[train_index], images[val_index]
             y_train, y_val = labels[train_index], labels[val_index]
 
             fold_model = self.model.__class__(**self.model.get_params())
-            fold_model.fit(X_train, y_train, verbose=verbose)
+            fold_model.fit(X_train, y_train)
             y_pred_val = fold_model.predict(X_val)
             acc = accuracy_score(y_val, y_pred_val)
             self.acc_scores.append(acc)

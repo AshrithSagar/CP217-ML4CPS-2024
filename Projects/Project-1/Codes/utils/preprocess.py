@@ -18,6 +18,7 @@ def sift_preprocess(images):
     sift = cv2.SIFT_create()
     sift_features = []
     for image in images:
-        kp, des = sift.detectAndCompute(image, None)
-        sift_features.append(des)
-    return sift_features
+        _, des = sift.detectAndCompute(image, None)
+        feats = np.mean(des, axis=0) if des is not None else np.zeros(128)
+        sift_features.append(feats)
+    return np.array(sift_features)
