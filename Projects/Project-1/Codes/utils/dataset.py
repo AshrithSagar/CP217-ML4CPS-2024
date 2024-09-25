@@ -2,6 +2,7 @@
 dataset.py
 """
 
+import abc
 import os
 
 import numpy as np
@@ -9,22 +10,32 @@ import tensorflow as tf
 from PIL import Image
 
 
-class GSVDataLoader:
+class GSVDataLoaderBase(abc.ABC):
     def __init__(self, train_dir, test_dir, seed=42):
         self.seed = seed
         self.train_dir = train_dir
         self.test_dir = test_dir
         self.image_dims = (400, 300)
-        tf.random.set_seed(seed)
-        os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+        self.train_ds = None
+        self.labels = None
+        self.test_ds = None
 
-    def load_train_tf(self, batch_size=32):
-        self.train_ds = tf.keras.preprocessing.image_dataset_from_directory(
-            self.train_dir,
-            label_mode="int",
-            image_size=self.image_dims,
-            batch_size=batch_size,
-        )
+    @abc.abstractmethod
+    def load_train(self):
+        pass
+
+    @abc.abstractmethod
+    def load_test(self):
+        pass
+
+    @abc.abstractmethod
+    def select_subset(self, num_samples):
+        pass
+
+
+class GSVDataLoaderSklearn(GSVDataLoaderBase):
+    def __init__(self, train_dir, test_dir, seed=42):
+        super().__init__(train_dir, test_dir, seed)
 
     def load_train(self):
         train_ds = []
@@ -59,3 +70,41 @@ class GSVDataLoader:
         indices = np.random.choice(self.train_ds.shape[0], num_samples, replace=False)
         self.train_ds = self.train_ds[indices]
         self.labels = self.labels[indices]
+
+
+class GSVDataLoaderTF(GSVDataLoaderBase):
+    def __init__(self, train_dir, test_dir, seed=42):
+        super().__init__(train_dir, test_dir, seed)
+        self.autotune = tf.data.experimental.AUTOTUNE
+
+    def load_train(self):
+        train_ds = tf.keras.preprocessing.image_dataset_from_directory(
+            self.train_dir,
+            labels="inferred",
+            label_mode="int",
+            color_mode="rgb",
+            batch_size=32,
+            image_size=self.image_dims,
+            seed=self.seed,
+        )
+        train_ds = train_ds.map(self.normalize_images)
+        self.train_ds = train_ds.prefetch(self.autotune)
+
+    def load_test(self, batch_size=32):
+        test_ds = tf.data.Dataset.list_files(self.test_dir + "/*")
+        test_ds = test_ds.map(self.process_image, num_parallel_calls=self.autotune)
+        self.test_ds = test_ds.batch(batch_size).prefetch(self.autotune)
+
+    def select_subset(self, num_samples):
+        self.train_ds = self.train_ds.shuffle(buffer_size=1000, seed=self.seed)
+        self.train_ds = self.train_ds.take(num_samples)
+
+    def process_image(self, file_path):
+        image = tf.io.read_file(file_path)
+        image = tf.image.decode_jpeg(image, channels=3)
+        image = tf.image.resize(image, self.image_dims)
+        image /= 255.0  # Normalize
+        return image
+
+    def normalize_images(self, x, y):
+        return x / 255.0, y
