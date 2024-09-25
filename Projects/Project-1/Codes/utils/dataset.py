@@ -93,6 +93,7 @@ class GSVDataLoaderTF(GSVDataLoaderBase):
     def load_test(self, batch_size=32):
         test_ds = tf.data.Dataset.list_files(self.test_dir + "/*")
         test_ds = test_ds.map(self.process_image, num_parallel_calls=self.autotune)
+        test_ds = test_ds.filter(lambda x: x is not None)
         self.test_ds = test_ds.batch(batch_size).prefetch(self.autotune)
 
     def select_subset(self, num_samples):
@@ -100,11 +101,14 @@ class GSVDataLoaderTF(GSVDataLoaderBase):
         self.train_ds = self.train_ds.take(num_samples)
 
     def process_image(self, file_path):
-        image = tf.io.read_file(file_path)
-        image = tf.image.decode_jpeg(image, channels=3)
-        image = tf.image.resize(image, self.image_dims)
-        image /= 255.0  # Normalize
-        return image
+        try:
+            image = tf.io.read_file(file_path)
+            image = tf.image.decode_jpeg(image, channels=3)
+            image = tf.image.resize(image, self.image_dims)
+            image /= 255.0  # Normalize
+            return image
+        except tf.errors.InvalidArgumentError:
+            return None
 
     def normalize_images(self, x, y):
         return x / 255.0, y
