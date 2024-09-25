@@ -54,13 +54,15 @@ class PreprocessorTF:
         return np.array([self.sift_extractor.extract(img) for img in images])
 
     def sift(self, dataset):
-        def extract_sift(images, labels):
+        def extract_sift(images, labels=None):
             images = tf.image.convert_image_dtype(images, tf.uint8)
             sift_features = tf.numpy_function(
                 self.extract_sift_features,
                 [images],
                 tf.float32,
             )
+            if labels is None:
+                return sift_features
             return sift_features, labels
 
         return dataset.map(extract_sift)
