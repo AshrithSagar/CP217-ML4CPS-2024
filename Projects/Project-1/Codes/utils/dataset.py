@@ -49,6 +49,8 @@ class GSVDataLoaderSklearn(GSVDataLoaderBase):
                 if not img_path.endswith(".jpg"):
                     continue
                 image = Image.open(img_path)
+                if image.mode != "RGB":
+                    image = image.convert("RGB")  # Convert to RGB
                 image = np.array(image)
                 train_ds.append(image)
                 labels.append(label_map[label])

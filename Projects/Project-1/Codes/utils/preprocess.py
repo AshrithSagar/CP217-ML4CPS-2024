@@ -34,7 +34,15 @@ class PreprocessorSklearn:
         return normalized_images.reshape(images.shape[0], -1)
 
     def sift(self, images):
-        features = [self.sift_extractor.extract(image) for image in images]
+        features = []
+        for image in images:
+            if image is None or image.size == 0:
+                features.append(np.zeros(128))
+            elif len(image.shape) != 3 or image.shape[2] != 3:
+                print(f"Unexpected image shape: {image.shape}")
+                features.append(np.zeros(128))
+            else:
+                features.append(self.sift_extractor.extract(image))
         return np.array(features)
 
 
