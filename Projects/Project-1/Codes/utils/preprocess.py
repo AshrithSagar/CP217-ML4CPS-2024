@@ -2,54 +2,12 @@
 preprocess.py
 """
 
-import cv2
+from functools import partial
+
 import numpy as np
 import tensorflow as tf
-from skimage.color import rgb2gray
-from skimage.feature import hog
-
-
-class SIFTExtractor:
-    def __init__(self):
-        self.sift = cv2.SIFT_create()
-
-    def extract(self, image):
-        if image is None or image.size == 0:
-            return np.zeros(128)
-
-        gray_image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-
-        # Ensure right depth (CV_8U)
-        if gray_image.dtype != np.uint8:
-            gray_image = (gray_image * 255).astype(np.uint8)
-
-        _, des = self.sift.detectAndCompute(gray_image, None)
-        return np.mean(des, axis=0) if des is not None else np.zeros(128)
-
-
-class HOGExtractor:
-    def __init__(
-        self,
-        pixels_per_cell=(8, 8),
-        cells_per_block=(2, 2),
-        orientations=9,
-    ):
-        self.pixels_per_cell = pixels_per_cell
-        self.cells_per_block = cells_per_block
-        self.orientations = orientations
-
-    def extract(self, image):
-        if image is None or image.size == 0:
-            return np.zeros(324)
-        gray_image = rgb2gray(image)
-        hog_features = hog(
-            gray_image,
-            pixels_per_cell=self.pixels_per_cell,
-            cells_per_block=self.cells_per_block,
-            orientations=self.orientations,
-            block_norm="L2-Hys",
-        )
-        return hog_features
+from utils.preprocessing.hog import HOGExtractor
+from utils.preprocessing.sift import SIFTExtractor
 
 
 class PreprocessorSklearn:
@@ -99,14 +57,16 @@ class PreprocessorTF:
 
         return dataset.map(process_batch)
 
-    def extract_sift_features(self, images):
-        return np.array([self.sift_extractor.extract(img) for img in images])
+    def extract_features(self, extractor, images):
+        return np.array([extractor.extract(img) for img in images])
 
     def sift(self, dataset):
+        extractor = partial(self.extract_features, self.sift_extractor)
+
         def extract_sift(images, labels=None):
             images = tf.image.convert_image_dtype(images, tf.uint8)
             sift_features = tf.numpy_function(
-                self.extract_sift_features,
+                extractor,
                 [images],
                 tf.float32,
             )
@@ -116,14 +76,13 @@ class PreprocessorTF:
 
         return dataset.map(extract_sift)
 
-    def extract_hog_features(self, images):
-        return np.array([self.hog_extractor.extract(img) for img in images])
-
     def hog(self, dataset):
+        extractor = partial(self.extract_features, self.hog_extractor)
+
         def extract_hog(images, labels=None):
             images = tf.image.convert_image_dtype(images, tf.uint8)
             hog_features = tf.numpy_function(
-                self.extract_hog_features,
+                extractor,
                 [images],
                 tf.float32,
             )
