@@ -5,6 +5,8 @@ preprocess.py
 import cv2
 import numpy as np
 import tensorflow as tf
+from skimage.color import rgb2gray
+from skimage.feature import hog
 
 
 class SIFTExtractor:
@@ -25,9 +27,35 @@ class SIFTExtractor:
         return np.mean(des, axis=0) if des is not None else np.zeros(128)
 
 
+class HOGExtractor:
+    def __init__(
+        self,
+        pixels_per_cell=(8, 8),
+        cells_per_block=(2, 2),
+        orientations=9,
+    ):
+        self.pixels_per_cell = pixels_per_cell
+        self.cells_per_block = cells_per_block
+        self.orientations = orientations
+
+    def extract(self, image):
+        if image is None or image.size == 0:
+            return np.zeros(324)
+        gray_image = rgb2gray(image)
+        hog_features = hog(
+            gray_image,
+            pixels_per_cell=self.pixels_per_cell,
+            cells_per_block=self.cells_per_block,
+            orientations=self.orientations,
+            block_norm="L2-Hys",
+        )
+        return hog_features
+
+
 class PreprocessorSklearn:
     def __init__(self):
         self.sift_extractor = SIFTExtractor()
+        self.hog_extractor = HOGExtractor()
 
     def flatten(self, images):
         normalized_images = images.astype(np.float32) / 255.0
@@ -45,10 +73,23 @@ class PreprocessorSklearn:
                 features.append(self.sift_extractor.extract(image))
         return np.array(features)
 
+    def hog(self, images):
+        features = []
+        for image in images:
+            if image is None or image.size == 0:
+                features.append(np.zeros(324))
+            elif len(image.shape) != 3 or image.shape[2] != 3:
+                print(f"Unexpected image shape: {image.shape}")
+                features.append(np.zeros(324))
+            else:
+                features.append(self.hog_extractor.extract(image))
+        return np.array(features)
+
 
 class PreprocessorTF:
     def __init__(self):
         self.sift_extractor = SIFTExtractor()
+        self.hog_extractor = HOGExtractor()
 
     def flatten(self, dataset):
         def process_batch(images, labels):
@@ -74,3 +115,20 @@ class PreprocessorTF:
             return sift_features, labels
 
         return dataset.map(extract_sift)
+
+    def extract_hog_features(self, images):
+        return np.array([self.hog_extractor.extract(img) for img in images])
+
+    def hog(self, dataset):
+        def extract_hog(images, labels=None):
+            images = tf.image.convert_image_dtype(images, tf.uint8)
+            hog_features = tf.numpy_function(
+                self.extract_hog_features,
+                [images],
+                tf.float32,
+            )
+            if labels is None:
+                return hog_features
+            return hog_features, labels
+
+        return dataset.map(extract_hog)
