@@ -36,6 +36,6 @@ class DatasetLoader:
 
 
 if __name__ == "__main__":
-    dfl = DatasetLoader(dataset_dir="../dataset").load_all_datasets()
+    dfl = DatasetLoader(dataset_dir="../dataset")
     dataset = dfl.load_all_datasets()
     df = dfl.get_dataframe("Malvern")
