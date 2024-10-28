@@ -1,3 +1,13 @@
 \section*{Problem 1}
 
+\textbf{(Convexity of the BCE loss)}
+
+The Binary Cross Entropy Loss(BCE) for logistic regression is given by:
+\[
+    \mathcal{L}(\theta)=-\frac{1}{m} \sum_{i=1}^{m} y^{(i)} \log \left(h_{\theta}\left(x^{(i)}\right)\right)+\left(1-y^{(i)}\right) \log \left(1-h_{\theta}\left(x^{(i)}\right)\right)
+\]
+where \( y^{(i)} \in\{0,1\} \) and \( h_{\theta}(x)=\sigma\left(\theta^{T} x\right), \sigma \) is the usual logistic sigmoid.\\
+Find the Hessian \( \mathbf{H} \) of the function and show that it is positive semidefinite.\\
+P.S - Positive Semidefiniteness of the Hessian means that the loss function is convex(as mentioned in class), and hence, it will have a unique global minimum.
+
 \subsection*{Solution}

@@ -1,3 +1,15 @@
 \section*{Problem 7}
 
+\textbf{(Support Vector Machines-II: \( l_{2}
+    \) norm soft margin SVM)}
+The \( l_{2} \) norm soft margin SVM algorithm is given by the following optimization problem:
+\[
+    \min _{w, b, \xi} \quad \frac{1}{2}\|w\|^{2}+\frac{C}{2} \sum_{i=1}^{m} \xi_{i}^{2} \quad \text { s.t } \quad y^{(i)}\left(w^{T} x^{(i)}+b\right) \geq 1-\xi_{i}, i=1, \ldots, m
+\]
+
+(a) Notice that the constrains \( \xi_{i} \geq 0 \) have been dropped. Show that these nonnegativity constraints can be removed. That is, the optimal value of the objective will be the same whether or not these constraints are present.\\
+(b) What is the Lagrangian of the \( l_{2} \) norm soft margin SVM optimization problem?\\
+(c) Minimize the Lagrangian with respect to \( w, b \), and \( \xi \).\\
+(d) What is the dual of the \( l_{2} \) norm soft margin SVM optimization problem?
+
 \subsection*{Solution}
