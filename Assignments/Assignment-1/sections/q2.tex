@@ -1,25 +1,25 @@
 \section*{Problem 2}
 
-\textbf{(Locally weighted linear regression)}
-
+\textbf{(Locally weighted linear regression)}\\
 Consider a linear regression problem in which we want to weight different training examples differently. Specifically, suppose we want to minimize
 \[
     \mathcal{L}(\theta)=\frac{1}{2} \sum_{i=1}^{m} w^{(i)}\left(\theta^{T} x^{(i)}-y^{(i)}\right)^{2}
 \]
-
 here \( w^{(i)} \) is the weight given to \( i^{\text {th }} \) training example.\\
-(a) Show that the loss \( \mathcal{L}(\theta) \) can be written as
-\[
-    \mathcal{L}(\theta)=(X \theta-y)^{T} W(X \theta-y)
-\]
+\begin{enumerate}[label= (\alph*), noitemsep, topsep=0pt]
+    \item Show that the loss \( \mathcal{L}(\theta) \) can be written as
+          \[
+              \mathcal{L}(\theta)=(X \theta-y)^{T} W(X \theta-y)
+          \]
+          for an appropriate weight matrix W , where X and y are the data matrix and label matrix, respectively.
 
-for an appropriate weight matrix W , where X and y are the data matrix and label matrix, respectively.\\
-(b) By finding the derivative \( \nabla_{\theta} \mathcal{L}(\theta) \), generalize the normal equation to weighted setting, and give the value of \( \theta \) that minimizes \( \mathcal{L}(\theta) \).\\
-(c) Suppose we have a dataset \( \left\{\left(x^{(i)}, y^{(i)}\right) ; i=1, \ldots m\right\} \) of \( m \) independent examples, but we model \( y^{(i)} \) 's as drawn from a conditional distribution with different levels of variance \( \left(\sigma^{(i)}\right)^{2} \). Specifically, assume the model:
-\[
-    p\left(y^{(i)} \mid x^{(i)} ; \theta\right)=\frac{1}{\sqrt{2 \pi} \sigma^{(i)}} \exp \left(-\frac{\left(y^{(i)}-\theta^{T} x^{(i)}\right)^{2}}{2\left(\sigma^{(i)}\right)^{2}}\right)
-\]
+    \item  By finding the derivative \( \nabla_{\theta} \mathcal{L}(\theta) \), generalize the normal equation to weighted setting, and give the value of \( \theta \) that minimizes \( \mathcal{L}(\theta) \).
 
-Show that finding the maximum likelihood estimate of \( \theta \) reduces to solving a weighted linear regression problem. State clearly what are \( w^{(i)} \) 's are in terms of \( \sigma^{(i)} \) 's.
+    \item  Suppose we have a dataset \( \left \{ \left(x^{(i)}, y^{(i)}\right) ; i=1, \ldots m\right \} \) of \( m \) independent examples, but we model \( y^{(i)} \) 's as drawn from a conditional distribution with different levels of variance \( \left(\sigma^{(i)}\right)^{2} \). Specifically, assume the model:
+          \[
+              p\left(y^{(i)} \mid x^{(i)} ; \theta\right)=\frac{1}{\sqrt{2 \pi} \sigma^{(i)}} \exp \left(-\frac{\left(y^{(i)}-\theta^{T} x^{(i)}\right)^{2}}{2\left(\sigma^{(i)}\right)^{2}}\right)
+          \]
+          Show that finding the maximum likelihood estimate of \( \theta \) reduces to solving a weighted linear regression problem. State clearly what are \( w^{(i)} \) 's are in terms of \( \sigma^{(i)} \) 's.
+\end{enumerate}
 
 \subsection*{Solution}
