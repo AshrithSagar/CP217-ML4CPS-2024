@@ -3,6 +3,7 @@ dataset.py
 """
 
 import os
+from typing import List, Union
 
 import pandas as pd
 from openpyxl import load_workbook
@@ -47,19 +48,18 @@ class DatasetLoaderXL:
     Using openpyxl to load Excel files.
     """
 
-    def __init__(self, dataset_dir):
+    def __init__(self, dataset_dir: Union[str, os.PathLike]) -> None:
         self.dataset_dir = dataset_dir
         self.dataframes = {}
 
-    def load_all_datasets(self):
+    def load_all_datasets(self) -> None:
         """Load all Excel files from the dataset directory using openpyxl."""
         for filename in os.listdir(self.dataset_dir):
             if filename.endswith(".xlsx"):
                 file_path = os.path.join(self.dataset_dir, filename)
                 self.dataframes[filename] = self.load_dataset(file_path)
-        return self.dataframes
 
-    def load_dataset(self, file_path):
+    def load_dataset(self, file_path) -> List[List]:
         """Load a single Excel file into a list of lists."""
         try:
             workbook = load_workbook(file_path)
@@ -72,7 +72,7 @@ class DatasetLoaderXL:
             print(f"Error loading {file_path}: {e}")
             return None
 
-    def get_data(self, suburb_name):
+    def get_data(self, suburb_name) -> List[List]:
         """Get the data for a specific suburb."""
         filename = f"{suburb_name}-Suburb - XLSX.xlsx"
         return self.dataframes.get(filename, None)
