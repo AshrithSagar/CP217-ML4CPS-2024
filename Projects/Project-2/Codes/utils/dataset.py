@@ -3,6 +3,7 @@ dataset.py
 """
 
 import os
+import re
 from typing import List, Union
 
 import pandas as pd
@@ -57,7 +58,8 @@ class DatasetLoaderXL:
         for filename in os.listdir(self.dataset_dir):
             if filename.endswith(".xlsx"):
                 file_path = os.path.join(self.dataset_dir, filename)
-                self.dataframes[filename] = self.load_dataset(file_path)
+                suburb_name = re.search(r"(.+)-Suburb - XLSX.xlsx", filename).group(1)
+                self.dataframes[suburb_name] = self.load_dataset(file_path)
 
     def load_dataset(self, file_path) -> List[List]:
         """Load a single Excel file into a list of lists."""
@@ -74,8 +76,7 @@ class DatasetLoaderXL:
 
     def get_data(self, suburb_name) -> List[List]:
         """Get the data for a specific suburb."""
-        filename = f"{suburb_name}-Suburb - XLSX.xlsx"
-        return self.dataframes.get(filename, None)
+        return self.dataframes.get(suburb_name, None)
 
 
 if __name__ == "__main__":
