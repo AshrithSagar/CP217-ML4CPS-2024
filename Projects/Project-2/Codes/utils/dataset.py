@@ -52,6 +52,7 @@ class DatasetLoaderXL:
     def __init__(self, dataset_dir: Union[str, os.PathLike]) -> None:
         self.dataset_dir = dataset_dir
         self.dataframes = {}
+        self.suburb = None
 
     def load_all_datasets(self) -> None:
         """Load all Excel files from the dataset directory using openpyxl."""
@@ -74,9 +75,49 @@ class DatasetLoaderXL:
             print(f"Error loading {file_path}: {e}")
             return None
 
-    def get_data(self, suburb_name) -> List[List]:
-        """Get the data for a specific suburb."""
-        return self.dataframes.get(suburb_name, None)
+    def get_data(self, suburb_name: str) -> pd.DataFrame:
+        """Get the data for a specific suburb as a DataFrame."""
+        return self.dataframes.get(suburb_name, pd.DataFrame())
+
+    def list_categories(self) -> pd.Series:
+        """Get categories list"""
+
+        return (
+            self.suburb_df["Category"].unique()
+            if not self.suburb_df.empty
+            else pd.Series([])
+        )
+
+    def filter_by_category(self, suburb_name: str, category: str) -> pd.DataFrame:
+        """Filter data for a specific category."""
+        df = self.get_data(suburb_name)
+        return df[df["Category"] == category] if not df.empty else pd.DataFrame()
+
+    def summarize_data(self, suburb_name: str) -> pd.DataFrame:
+        """Summarize data by category."""
+        df = self.get_data(suburb_name)
+        return (
+            df.groupby("Category")["Value"].sum().reset_index()
+            if not df.empty
+            else pd.DataFrame()
+        )
+
+    def visualize_data(self, suburb_name: str):
+        """Visualize the data for a specific suburb."""
+        import matplotlib.pyplot as plt
+
+        df = self.summarize_data(suburb_name)
+        if not df.empty:
+            plt.figure(figsize=(10, 6))
+            plt.bar(df["Category"], df["Value"], color="skyblue")
+            plt.title(f"Summary of Values by Category for {suburb_name}")
+            plt.xlabel("Category")
+            plt.ylabel("Total Value")
+            plt.xticks(rotation=45)
+            plt.tight_layout()
+            plt.show()
+        else:
+            print(f"No data available to visualize for suburb: {suburb_name}")
 
 
 if __name__ == "__main__":
