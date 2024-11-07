@@ -23,8 +23,6 @@ class DatasetLoaderXL:
     ) -> None:
         self.dataset_dir = dataset_dir
         self.dataset = {}
-        self.suburb = None
-        self.suburbs = []
         self.suburb_df = pd.DataFrame()
         self.verbose = verbose
 
@@ -33,82 +31,59 @@ class DatasetLoaderXL:
         for filename in os.listdir(self.dataset_dir):
             if filename.endswith(".xlsx"):
                 file_path = os.path.join(self.dataset_dir, filename)
-                suburb_name = re.search(
-                    r"(.+)-Suburb - XLSX.xlsx",
-                    filename,
-                ).group(1)
-                self.dataset[suburb_name] = self.load_dataset(file_path)
+                suburb_name = re.search(r"(.+)-Suburb - XLSX.xlsx", filename)
+                if suburb_name:
+                    self.dataset[suburb_name.group(1)] = self.load_dataset(file_path)
 
     def load_dataset(self, file_path) -> List[List]:
         """Load a single Excel file into a list of lists."""
         try:
             workbook = load_workbook(file_path)
             sheet = workbook.active
-            data = []
-            for row in sheet.iter_rows(values_only=True):
-                data.append(row)
+            data = [row for row in sheet.iter_rows(values_only=True)]
             return data
         except Exception as e:
             print(f"Error loading {file_path}: {e}")
-            return None
+            return []
 
     def list_suburbs(self) -> List[str]:
         """List all the suburbs in the dataset."""
-        self.suburbs = list(self.dataset.keys())
-        return self.suburbs
+        return list(self.dataset.keys())
 
     def get_data(self, suburb_name: str) -> pd.DataFrame:
         """Get the data for a specific suburb as a DataFrame."""
-        self.suburb_df = self.dataset.get(suburb_name, pd.DataFrame())
-        self.clean_suburb_df()
-        return self.suburb_df
+        if suburb_name not in self.dataset:
+            print(f"No data found for suburb: {suburb_name}")
+            return pd.DataFrame()
 
-    def clean_suburb_df(self) -> None:
-        """Clean the suburb data."""
+        data = self.dataset[suburb_name]
         df = pd.DataFrame(
-            self.suburb_df,
+            data,
             columns=["Category", "Subcategory", "Value", "Extra1", "Extra2"],
         )
+        if df.empty:
+            return
+
         df["Category"] = df["Category"].ffill()
-        df = df.drop(columns=["Extra1", "Extra2"])
+        df.drop(columns=["Extra1", "Extra2"], inplace=True)
         self.suburb_df = df
+        return self.suburb_df
 
     def list_categories(self) -> pd.Series:
         """Get categories list"""
-        df = self.suburb_df
-        return df["Category"].unique() if not df.empty else pd.Series([])
+        return (
+            self.suburb_df["Category"].unique()
+            if not self.suburb_df.empty
+            else pd.Series([])
+        )
 
     def get_category(self, category: str) -> pd.DataFrame:
         """Filter data for a specific category."""
-        df = self.suburb_df
-        df_category = df[df["Category"] == category]
-        return df_category if not df.empty else pd.DataFrame()
-
-    def summarize_data(self) -> pd.DataFrame:
-        """Summarize data by category."""
-        df = self.suburb_df
         return (
-            df.groupby("Category")["Value"].sum().reset_index()
-            if not df.empty
+            self.suburb_df[self.suburb_df["Category"] == category]
+            if not self.suburb_df.empty
             else pd.DataFrame()
         )
-
-    def visualize_data(self, suburb_name: str):
-        """Visualize the data for a specific suburb."""
-        import matplotlib.pyplot as plt
-
-        df = self.summarize_data(suburb_name)
-        if not df.empty:
-            plt.figure(figsize=(10, 6))
-            plt.bar(df["Category"], df["Value"], color="skyblue")
-            plt.title(f"Summary of Values by Category for {suburb_name}")
-            plt.xlabel("Category")
-            plt.ylabel("Total Value")
-            plt.xticks(rotation=45)
-            plt.tight_layout()
-            plt.show()
-        else:
-            print(f"No data available to visualize for suburb: {suburb_name}")
 
 
 if __name__ == "__main__":
