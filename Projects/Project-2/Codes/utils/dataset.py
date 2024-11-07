@@ -71,11 +71,11 @@ class DatasetLoaderXL:
 
     def list_categories(self) -> pd.Series:
         """Get categories list"""
-        return (
-            self.suburb_df["Category"].unique()
-            if not self.suburb_df.empty
-            else pd.Series([])
-        )
+
+        if self.suburb_df.empty:
+            self.get_data(self.list_suburbs()[0])
+
+        return self.suburb_df["Category"].unique()
 
     def get_category(self, category: str) -> pd.DataFrame:
         """Filter data for a specific category."""
@@ -84,6 +84,33 @@ class DatasetLoaderXL:
             if not self.suburb_df.empty
             else pd.DataFrame()
         )
+
+    def get_category_across_all_suburbs(self, category: str) -> pd.DataFrame:
+        """Get data for a specific category across all suburbs."""
+
+        all_dfs = []
+        for suburb in self.list_suburbs():
+            df = self.get_data(suburb)
+            df = df[df["Category"] == category]
+            df = df.drop(columns=["Category"])
+            df["Suburb"] = suburb
+            all_dfs.append(df)
+
+        all_dfs = pd.concat(all_dfs, ignore_index=True)
+        all_dfs.set_index("Suburb", inplace=True)
+        all_dfs = all_dfs.sort_index()
+
+        self.category = category
+        self.category_df = all_dfs
+        return self.category_df
+
+    def get_values_for_subcategory_across_all_suburbs(self) -> pd.Series:
+        pivot_df = self.category_df.pivot_table(
+            index="Suburb", columns="Subcategory", aggfunc="first"
+        )
+        pivot_df.columns = pivot_df.columns.droplevel()
+        pivot_df.reset_index(inplace=True)
+        return pivot_df
 
 
 if __name__ == "__main__":
