@@ -12,12 +12,31 @@ from umap import UMAP
 
 
 class DataProcessor:
-    def __init__(self, df):
+    def __init__(self, df, seed=42):
         self.df = df
+        self.seed = seed
         self.label_encoder = LabelEncoder()
         self.scaler = StandardScaler()
 
-    def data_preperation(self, columns):
+    def get_columns(self):
+        columns = {
+            "Values": self.df.columns[2:],
+            "Community": self.df.columns[0:2],
+            "Geography": self.df.columns[2:17],
+            "Land_Use": self.df.columns[17:27],
+            "Population_2012": self.df.columns[27:52],
+            "Population_2007": self.df.columns[52:77],
+            "Population_Change_2007_2012": self.df.columns[77:90],
+            "Services": self.df.columns[90:114],
+            "Socio_Demographic": self.df.columns[114:170],
+            "Diversity": self.df.columns[170:210],
+            "Hospital": self.df.columns[210:226],
+            "Coordinates": self.df.columns[226:],
+        }
+        return columns
+
+    def data_preperation(self):
+        columns = self.get_columns()["Values"]
         df_Data = self.df[columns]
 
         for column in columns:
@@ -48,21 +67,6 @@ class DataProcessor:
 
 
 if __name__ == "__main__":
-    df = pd.read_csv("data_with_coordinates.csv", index_col=0)
-
-    index_values = np.array(df.columns)
-    Values = index_values[2:]
-    Community = index_values[0:2]
-    Geography = index_values[2:17]
-    Land_Use = index_values[17:27]
-    population_2012 = index_values[27:52]
-    population_2007 = index_values[52:77]
-    population_change_2007_2012 = index_values[77:90]
-    Services = index_values[90:114]
-    Socio_demographic = index_values[114:170]
-    Diversity = index_values[170:210]
-    Hospital = index_values[210:226]
-    Coordinates = index_values[226:]
 
     def data_preperation(df, columns):
         index_values = np.array(df.columns)
