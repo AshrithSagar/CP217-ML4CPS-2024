@@ -63,6 +63,22 @@ class DataProcessor:
 
         self.df = self.scaler.fit_transform(df_Data)
 
+    def plot_suburbs_in_map(self):
+        df = self.df_data
+        fig = px.scatter_mapbox(
+            df,
+            lat="Latitude",
+            lon="Longitude",
+            hover_name=df.iloc[:, 0],
+            zoom=10,
+            height=600,
+            width=800,
+            color=df.index,
+        )
+        fig.update_layout(mapbox_style="open-street-map")
+        fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+        fig.show()
+
 
 if __name__ == "__main__":
 
@@ -423,25 +439,6 @@ if __name__ == "__main__":
         )
         run_kmeans(pts4, y4)
         print("=================================\n")
-
-        # df_Data = data_preperation(df, co)
-        # # def data_analysis_TSNE(df, perplexity=20.0, random_state=5)
-        # data_analysis_TSNE(df_Data, perplexity = 5.0)
-
-    def plot_in_map(df):
-        fig = px.scatter_mapbox(
-            df,
-            lat="Latitude",
-            lon="Longitude",
-            hover_name=df.iloc[:, 0],
-            zoom=10,
-            height=600,
-            width=800,
-            color=df.index,
-        )
-        fig.update_layout(mapbox_style="open-street-map")
-        fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-        fig.show()
 
     import matplotlib.pyplot as plt
     import numpy as np
