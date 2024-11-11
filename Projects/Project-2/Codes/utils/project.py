@@ -12,50 +12,56 @@ from umap import UMAP
 
 
 class DataProcessor:
-    def __init__(self, df, seed=42):
-        self.df = df
+    def __init__(self, df, seed=42, verbose=False):
+        self.df_data = df
         self.seed = seed
+        self.verbose = verbose
         self.label_encoder = LabelEncoder()
         self.scaler = StandardScaler()
 
     def get_columns(self):
         columns = {
-            "Values": self.df.columns[2:],
-            "Community": self.df.columns[0:2],
-            "Geography": self.df.columns[2:17],
-            "Land_Use": self.df.columns[17:27],
-            "Population_2012": self.df.columns[27:52],
-            "Population_2007": self.df.columns[52:77],
-            "Population_Change_2007_2012": self.df.columns[77:90],
-            "Services": self.df.columns[90:114],
-            "Socio_Demographic": self.df.columns[114:170],
-            "Diversity": self.df.columns[170:210],
-            "Hospital": self.df.columns[210:226],
-            "Coordinates": self.df.columns[226:],
+            "Values": self.df_data.columns[2:],
+            "Community": self.df_data.columns[0:2],
+            "Geography": self.df_data.columns[2:17],
+            "Land_Use": self.df_data.columns[17:27],
+            "Population_2012": self.df_data.columns[27:52],
+            "Population_2007": self.df_data.columns[52:77],
+            "Population_Change_2007_2012": self.df_data.columns[77:90],
+            "Services": self.df_data.columns[90:114],
+            "Socio_Demographic": self.df_data.columns[114:170],
+            "Diversity": self.df_data.columns[170:210],
+            "Hospital": self.df_data.columns[210:226],
+            "Coordinates": self.df_data.columns[226:],
         }
         return columns
 
-    def data_preperation(self):
-        columns = self.get_columns()["Values"]
-        df_Data = self.df[columns]
+    def get_verbose(self, verbose):
+        if verbose is None:
+            return self.verbose
+        else:
+            return verbose
+
+    def data_preperation(self, columns, verbose=None):
+        verbose = self.get_verbose(verbose)
+
+        df_Data = self.df_data[columns]
 
         for column in columns:
-            df_Data[column] = pd.to_numeric(df_Data[column], errors="ignore")
+            df_Data.loc[:, column] = pd.to_numeric(df_Data[column], errors="coerce")
 
         nan_cols = df_Data.columns[df_Data.isna().any()].tolist()
-        if nan_cols:
-            print("Columns with NaN values:")
-            print(nan_cols)
-
-        else:
-            print("No NaN values found in the DataFrame.")
+        if verbose:
+            if nan_cols:
+                print("Columns with NaN values:")
+                print(nan_cols)
+            else:
+                print("No NaN values found in the DataFrame.")
 
         for col in df_Data.columns:
-            df_Data[col] = self.label_encoder.fit_transform(df_Data[col])
+            df_Data.loc[:, col] = self.label_encoder.fit_transform(df_Data[col])
 
-        df_Data = self.scaler.fit_transform(df_Data)
-
-        return df_Data
+        self.df = self.scaler.fit_transform(df_Data)
 
     def plot_correlation_heatmap(self, columns):
         df_Data = self.data_preperation(columns)
