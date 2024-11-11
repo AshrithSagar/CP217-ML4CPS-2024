@@ -63,20 +63,11 @@ class DataProcessor:
 
         self.df = self.scaler.fit_transform(df_Data)
 
-    def plot_correlation_heatmap(self, columns):
-        df_Data = self.data_preperation(columns)
-        df_corr = pd.DataFrame(df_Data, columns=columns).corr()
-        plt.figure(figsize=(10, 8))
-        sns.heatmap(df_corr, annot=True, cmap="viridis")
-        plt.title("Correlation Heatmap")
-        plt.show()
-
 
 if __name__ == "__main__":
 
     def data_preperation(df, columns):
         index_values = np.array(df.columns)
-        Community = [index_values[0]]
         columns = np.insert(columns, 0, index_values[0], axis=0)
 
         df_Data = df[columns]
