@@ -21,14 +21,17 @@ class DatasetLoaderXL:
     def __init__(
         self,
         dataset_dir: Union[str, os.PathLike],
+        seed=42,
         console=Console(),
         verbose: bool = False,
     ) -> None:
         self.dataset_dir = dataset_dir
-        self.dataset = {}
-        self.suburb_df = pd.DataFrame()
+        self.seed = seed
         self.console = console
         self.verbose = verbose
+
+        self.dataset = {}
+        self.suburb_df = pd.DataFrame()
 
     def get_verbose(self, verbose):
         if verbose is None:
@@ -36,17 +39,8 @@ class DatasetLoaderXL:
         else:
             return verbose
 
-    def load_all_datasets(self) -> None:
-        """Load all Excel files from the dataset directory using openpyxl."""
-        for filename in os.listdir(self.dataset_dir):
-            if filename.endswith(".xlsx"):
-                file_path = os.path.join(self.dataset_dir, filename)
-                suburb_name = re.search(r"(.+)-Suburb - XLSX.xlsx", filename)
-                if suburb_name:
-                    self.dataset[suburb_name.group(1)] = self.load_dataset(file_path)
-
     def load_dataset(self, file_path) -> List[List]:
-        """Load a single Excel file into a list of lists."""
+        """Load a single Excel file"""
         try:
             workbook = load_workbook(file_path)
             sheet = workbook.active
@@ -56,9 +50,33 @@ class DatasetLoaderXL:
             print(f"Error loading {file_path}: {e}")
             return []
 
-    def list_suburbs(self) -> List[str]:
+    def load_all_datasets(self) -> None:
+        """Load all the Excel files using openpyxl."""
+        if self.dataset:
+            return
+
+        for filename in os.listdir(self.dataset_dir):
+            if filename.endswith(".xlsx"):
+                file_path = os.path.join(self.dataset_dir, filename)
+                suburb_name = re.search(r"(.+)-Suburb - XLSX.xlsx", filename)
+                if suburb_name:
+                    self.dataset[suburb_name.group(1)] = self.load_dataset(file_path)
+
+    def list_suburbs(self, verbose=None):
         """List all the suburbs in the dataset."""
-        return list(self.dataset.keys())
+        verbose = self.get_verbose(verbose)
+        self.load_all_datasets()
+        self.suburbs = list(self.dataset.keys())
+
+        if verbose:
+            table = Table(show_header=True, header_style="bold magenta")
+            table.add_column("Index", style="dim", justify="right")
+            table.add_column("Suburb", justify="left")
+
+            for idx, suburb in enumerate(self.suburbs, start=1):
+                table.add_row(str(idx), suburb)
+
+            self.console.print(table)
 
     def get_data(self, suburb_name: str) -> pd.DataFrame:
         """Get the data for a specific suburb as a DataFrame."""
@@ -84,7 +102,7 @@ class DatasetLoaderXL:
         verbose = self.get_verbose(verbose)
 
         if self.suburb_df.empty:
-            self.get_data(self.list_suburbs()[0])
+            self.get_data(self.suburbs[0])
 
         self.categories = self.suburb_df["Category"].unique()
 
@@ -101,11 +119,30 @@ class DatasetLoaderXL:
             else pd.DataFrame()
         )
 
+    def list_subcategories(self, category=None, verbose=None) -> pd.Series:
+        """Get subcategories list"""
+        verbose = self.get_verbose(verbose)
+
+        if self.suburb_df.empty:
+            self.get_data(self.suburbs[0])
+
+        if category is None:
+            category = self.suburb_df["Category"].unique()[0]
+
+        self.subcategories = self.suburb_df[self.suburb_df["Category"] == category][
+            "Subcategory"
+        ].unique()
+
+        if verbose:
+            self.console.print("Subcategories List:", style="bold black")
+            for idx, subcategory in enumerate(self.subcategories, start=1):
+                self.console.print(f"{idx}. {subcategory}", style="bold cyan")
+
     def get_category_across_all_suburbs(self, category: str) -> pd.DataFrame:
         """Get data for a specific category across all suburbs."""
 
         all_dfs = []
-        for suburb in self.list_suburbs():
+        for suburb in self.suburbs:
             df = self.get_data(suburb)
             df = df[df["Category"] == category]
             df = df.drop(columns=["Category"])
