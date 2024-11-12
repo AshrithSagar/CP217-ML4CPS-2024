@@ -8,6 +8,8 @@ from typing import List, Union
 
 import pandas as pd
 from openpyxl import load_workbook
+from rich.console import Console
+from rich.table import Table
 
 
 class DatasetLoaderXL:
@@ -19,11 +21,13 @@ class DatasetLoaderXL:
     def __init__(
         self,
         dataset_dir: Union[str, os.PathLike],
+        console=Console(),
         verbose: bool = False,
     ) -> None:
         self.dataset_dir = dataset_dir
         self.dataset = {}
         self.suburb_df = pd.DataFrame()
+        self.console = console
         self.verbose = verbose
 
     def load_all_datasets(self) -> None:
@@ -75,7 +79,11 @@ class DatasetLoaderXL:
         if self.suburb_df.empty:
             self.get_data(self.list_suburbs()[0])
 
-        return self.suburb_df["Category"].unique()
+        self.categories = self.suburb_df["Category"].unique()
+
+        self.console.print("Categories List:", style="bold black")
+        for idx, category in enumerate(self.categories, start=1):
+            self.console.print(f"{idx}. {category}", style="bold cyan")
 
     def get_category(self, category: str) -> pd.DataFrame:
         """Filter data for a specific category."""
