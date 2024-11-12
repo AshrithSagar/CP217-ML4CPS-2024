@@ -164,5 +164,4 @@ class DatasetLoaderXL:
             index="Suburb", columns="Subcategory", aggfunc="first"
         )
         pivot_df.columns = pivot_df.columns.droplevel()
-        pivot_df.reset_index(inplace=True)
         return pivot_df
