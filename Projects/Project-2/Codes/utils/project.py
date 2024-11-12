@@ -91,45 +91,6 @@ class DataProcessor:
 if __name__ == "__main__":
 
     def data_preperation_distance(df, columns, distance):
-        index_values = np.array(df.columns)
-        Community = [index_values[0]]
-        columns = np.insert(columns, 0, index_values[0], axis=0)
-
-        df_Data = df[columns]
-        X = df_Data.iloc[:, 1:].values
-        y = df_Data.iloc[:, 0].values
-
-        for column in columns:
-            df_Data[column] = pd.to_numeric(df_Data[column], errors="ignore")
-
-        nan_cols = df_Data.columns[df_Data.isna().any()].tolist()
-        if nan_cols:
-            print("Columns with NaN values:")
-            print(nan_cols)
-        else:
-            print("No NaN values found in the DataFrame.")
-
-        for col in df_Data.columns:
-            if pd.api.types.is_numeric_dtype(df_Data[col]):
-                df_Data[col] = df_Data[col].fillna(df_Data[col].mean())
-            else:
-                df_Data[col] = df_Data[col].fillna("NaN")
-
-        label_encoders = {}
-        columns_to_encode = [
-            col
-            for col in df_Data.columns
-            if df_Data[col].dtype == "object" and col != index_values[0]
-        ]
-
-        print(columns_to_encode)
-
-        for column in columns_to_encode:
-            df_Data[column] = df_Data[column].astype(str)
-            le = LabelEncoder()
-            df_Data[column] = le.fit_transform(df_Data[column])
-            label_encoders[column] = le
-
         X = df_Data.iloc[:, 1:].values
         dist_matrix = pairwise_distances(X, X, metric=distance)
         return dist_matrix, y
