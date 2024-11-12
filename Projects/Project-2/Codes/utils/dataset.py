@@ -19,7 +19,6 @@ from rich.console import Console
 from scipy.stats import f_oneway
 from sklearn.manifold import MDS
 from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances
-from sklearn.neighbors import DistanceMetric
 from sklearn.preprocessing import minmax_scale
 
 
@@ -315,12 +314,6 @@ class DataProcessor:
         elif metric == "euclidean":
             metric = lambda x: 1 / (1 + euclidean_distances(x))
             metric_df = metric(self.df)
-        elif metric == "minowski":
-            metric = DistanceMetric.get_metric("minkowski")
-            metric = lambda x: 1 / (1 + metric.pairwise(x))
-            distance_metric = DistanceMetric.get_metric(metric)
-            distances = distance_metric.pairwise(self.df)
-            metric_df = 1 / (1 + distances)
 
         return pd.DataFrame(metric_df, index=df.index, columns=df.index)
 
