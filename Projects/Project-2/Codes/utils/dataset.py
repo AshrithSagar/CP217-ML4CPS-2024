@@ -188,3 +188,14 @@ class DatasetLoaderXL:
 
         data = pd.concat(data, axis=1)
         return data
+
+    def get_categories_across_all_suburbs(self, categories: List[str]) -> pd.DataFrame:
+        """Get data for a list of categories across all suburbs."""
+        data = []
+        for category in categories:
+            category_df = self.get_category_across_all_suburbs(category)
+            data.append(category_df)
+
+        data = pd.concat(data, axis=1)
+        data = data.stack().unstack(0)
+        return data
