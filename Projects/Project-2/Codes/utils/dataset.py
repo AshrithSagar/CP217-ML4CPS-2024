@@ -8,6 +8,7 @@ from typing import List, Union
 
 import pandas as pd
 from openpyxl import load_workbook
+from rich.columns import Columns
 from rich.console import Console
 from rich.table import Table
 
@@ -66,17 +67,18 @@ class DatasetLoaderXL:
         """List all the suburbs in the dataset."""
         verbose = self.get_verbose(verbose)
         self.load_all_datasets()
-        self.suburbs = list(self.dataset.keys())
+        self.suburbs = sorted(self.dataset.keys())
 
         if verbose:
-            table = Table(show_header=True, header_style="bold magenta")
-            table.add_column("Index", style="dim", justify="right")
-            table.add_column("Suburb", justify="left")
-
-            for idx, suburb in enumerate(self.suburbs, start=1):
-                table.add_row(str(idx), suburb)
-
-            self.console.print(table)
+            self.console.print("Suburbs List:", style="bold black")
+            columns = Columns(
+                [
+                    f"{idx}: {suburb}"
+                    for idx, suburb in enumerate(self.suburbs, start=1)
+                ],
+                width=25,
+            )
+            self.console.print(columns, style="bold cyan")
 
     def get_data(self, suburb_name: str) -> pd.DataFrame:
         """Get the data for a specific suburb as a DataFrame."""
@@ -164,12 +166,3 @@ class DatasetLoaderXL:
         pivot_df.columns = pivot_df.columns.droplevel()
         pivot_df.reset_index(inplace=True)
         return pivot_df
-
-
-if __name__ == "__main__":
-    dsxl = DatasetLoaderXL(dataset_dir="../dataset")
-    dsxl.load_all_datasets()
-    print(dsxl.list_suburbs())
-    print(dsxl.get_data("Malvern"))
-    print(dsxl.list_categories())
-    print(dsxl.get_category("Geography"))
