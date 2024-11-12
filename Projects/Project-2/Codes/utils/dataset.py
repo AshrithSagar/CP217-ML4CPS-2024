@@ -257,11 +257,13 @@ class DataProcessor:
         """Get the dendrogram plot"""
         if df is None:
             df = self.df
+        linkage_matrix = sch.linkage(df, method="ward")
         plt.figure(figsize=(10, 7))
-        dendrogram = sch.dendrogram(sch.linkage(df, method="ward"))
+        dendrogram = sch.dendrogram(linkage_matrix, labels=df.index.tolist())
         plt.title("Dendrogram")
         plt.xlabel("Suburbs")
         plt.ylabel("Euclidean distances")
+        plt.xticks(rotation=90)
         plt.show()
 
     def get_similarity_matrix(self, metric):
@@ -283,11 +285,11 @@ class DataProcessor:
         )
         return similar_suburbs
 
-    def plot_similarity_heatmap(self, similarity_matrix):
-        """Plot the similarity heatmap"""
+    def plot_heatmap(self, matrix, title="Heatmap"):
+        """Plot heatmap"""
         plt.figure(figsize=(10, 7))
-        sns.heatmap(similarity_matrix, cmap="viridis", annot=False)
-        plt.title("Similarity Heatmap")
+        sns.heatmap(matrix, cmap="viridis", annot=False)
+        plt.title(title)
         plt.show()
 
     def run_metric_mds_and_plot(
