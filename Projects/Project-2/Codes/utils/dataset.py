@@ -8,6 +8,7 @@ from math import cos, radians, sin, sqrt
 from typing import List, Union
 
 import matplotlib.pyplot as plt
+import networkx as nx
 import numpy as np
 import pandas as pd
 import scipy.cluster.hierarchy as sch
@@ -252,10 +253,12 @@ class DataProcessor:
             )
         return anova_results
 
-    def plot_dendrogram(self):
+    def plot_dendrogram(self, df=None):
         """Get the dendrogram plot"""
+        if df is None:
+            df = self.df
         plt.figure(figsize=(10, 7))
-        dendrogram = sch.dendrogram(sch.linkage(self.df, method="ward"))
+        dendrogram = sch.dendrogram(sch.linkage(df, method="ward"))
         plt.title("Dendrogram")
         plt.xlabel("Suburbs")
         plt.ylabel("Euclidean distances")
@@ -280,13 +283,22 @@ class DataProcessor:
         )
         return similar_suburbs
 
+    def plot_similarity_heatmap(self, similarity_matrix):
+        """Plot the similarity heatmap"""
+        plt.figure(figsize=(10, 7))
+        sns.heatmap(similarity_matrix, cmap="viridis", annot=False)
+        plt.title("Similarity Heatmap")
+        plt.show()
+
     def run_metric_mds_and_plot(
         self,
         similarity_matrix,
         n_components=2,
+        isMetricMDS: bool = True,
     ):
         mds = MDS(
             n_components=n_components,
+            metric=isMetricMDS,
             dissimilarity="precomputed",
             random_state=self.random_state,
         )
