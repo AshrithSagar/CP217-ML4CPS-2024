@@ -114,12 +114,12 @@ class DataProcessor:
             lat="Latitude",
             lon="Longitude",
             hover_name=df.iloc[:, 0],
-            zoom=10,
-            height=600,
-            width=800,
+            zoom=8,
+            height=500,
+            width=700,
             color=df.index,
         )
-        fig.update_layout(mapbox_style="open-street-map")
+        fig.update_layout(mapbox_style="carto-positron")
         fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
         fig.show()
 
