@@ -19,6 +19,7 @@ from rich.console import Console
 from scipy.stats import f_oneway
 from sklearn.manifold import MDS
 from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances
+from sklearn.neighbors import DistanceMetric
 from sklearn.preprocessing import minmax_scale
 
 
@@ -306,14 +307,22 @@ class DataProcessor:
 
     def get_similarity_matrix(self, metric):
         """Get the similarity matrix"""
+        df = self.df
 
         if metric == "cosine":
             metric = cosine_similarity
+            metric_df = metric(df)
         elif metric == "euclidean":
             metric = lambda x: 1 / (1 + euclidean_distances(x))
+            metric_df = metric(self.df)
+        elif metric == "minowski":
+            metric = DistanceMetric.get_metric("minkowski")
+            metric = lambda x: 1 / (1 + metric.pairwise(x))
+            distance_metric = DistanceMetric.get_metric(metric)
+            distances = distance_metric.pairwise(self.df)
+            metric_df = 1 / (1 + distances)
 
-        df = self.df
-        return pd.DataFrame(metric(df), index=df.index, columns=df.index)
+        return pd.DataFrame(metric_df, index=df.index, columns=df.index)
 
     def get_similar_suburbs(self, similarity_matrix, n_neighbours=5):
         similarity_matrix = similarity_matrix.copy()
