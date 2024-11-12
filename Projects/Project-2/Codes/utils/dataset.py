@@ -108,9 +108,11 @@ class DatasetLoaderXL:
             for idx, category in enumerate(self.categories, start=1):
                 self.console.print(f"{idx}. {category}", style="bold cyan")
 
-    def get_category(self, category: str) -> pd.DataFrame:
+    def get_category(self, category: str, suburb=None) -> pd.DataFrame:
         """Filter data for a specific category."""
-        suburb_df = self.get_data(self.suburbs[0])
+        if suburb is None:
+            suburb = self.suburbs[0]
+        suburb_df = self.get_data(suburb)
         category_df = suburb_df[suburb_df["Category"] == category]
         return category_df
 
@@ -126,39 +128,33 @@ class DatasetLoaderXL:
 
         if category is None:
             # List for all categories
-            self.subcategories = []
+            subcategories = []
             for category in self.categories:
-                self.subcategories.extend(get(category))
+                subcategories.extend(get(category))
         else:
-            self.subcategories = get(category)
+            subcategories = get(category)
 
         if verbose:
             self.console.print("Subcategories List:", style="bold black")
-            for idx, subcategory in enumerate(self.subcategories, start=1):
+            for idx, subcategory in enumerate(subcategories, start=1):
                 self.console.print(f"{idx}. {subcategory}", style="bold cyan")
+
+        return subcategories
 
     def get_category_across_all_suburbs(self, category: str) -> pd.DataFrame:
         """Get data for a specific category across all suburbs."""
 
-        all_dfs = []
+        data = []
         for suburb in self.suburbs:
-            suburb_df = self.get_data(suburb)
-            category_df = suburb_df[suburb_df["Category"] == category]
+            category_df = self.get_category(category, suburb)
             df = category_df.drop(columns=["Category"])
             df["Suburb"] = suburb
-            all_dfs.append(df)
+            data.append(df)
 
-        all_dfs = pd.concat(all_dfs, ignore_index=True)
-        all_dfs.set_index("Suburb", inplace=True)
-        all_dfs = all_dfs.sort_index()
-
-        self.category = category
-        self.category_df = all_dfs
-        return self.category_df
-
-    def get_values_for_subcategory_across_all_suburbs(self) -> pd.Series:
-        pivot_df = self.category_df.pivot_table(
-            index="Suburb", columns="Subcategory", aggfunc="first"
+        data = pd.concat(data, ignore_index=True)
+        data.set_index("Suburb", inplace=True)
+        data = data.groupby("Suburb").apply(
+            lambda x: x.set_index("Subcategory")["Value"]
         )
-        pivot_df.columns = pivot_df.columns.droplevel()
-        return pivot_df
+        data = data.sort_index()
+        return data
