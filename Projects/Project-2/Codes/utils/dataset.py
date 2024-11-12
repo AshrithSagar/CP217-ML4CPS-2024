@@ -243,6 +243,19 @@ class DataProcessor:
             pairs = pairs.head(k)
         return pairs
 
+    def correlations_to_latex(self, pairs, filename="a.tex"):
+        """Export correlations to LaTeX"""
+        pairs = pairs[["Variable1", "Variable2", "Correlation"]]
+        pairs = pairs.round(2)
+        latex_code = pairs.to_latex(
+            index=False,
+            escape=False,
+            caption="Top Correlations",
+            label="table:top_correlations",
+        )
+        with open(filename, "w") as f:
+            f.write(latex_code)
+
     def run_anova_analysis(self, subcategories):
         """Run ANOVA analysis"""
         df = self.df
@@ -252,6 +265,31 @@ class DataProcessor:
                 *[df[subcategory].values for suburb in df.index]
             )
         return anova_results
+
+    def export_anova_to_latex(self, anova_results, filename="a.tex"):
+        """Export ANOVA results to LaTeX"""
+        table_data = []
+        for category, result in anova_results.items():
+            pvalue = result.pvalue if result.pvalue is not None else "nan"
+            table_data.append(
+                [
+                    category,
+                    f"{result.statistic:.4e}",
+                    f"{pvalue:.4e}" if isinstance(pvalue, float) else pvalue,
+                ]
+            )
+        df_anova = pd.DataFrame(
+            table_data, columns=["Category", "Statistic", "P-value"]
+        )
+
+        latex_code = df_anova.to_latex(
+            index=False,
+            escape=False,
+            caption="ANOVA Results by Category",
+            label="table:anova_results",
+        )
+        with open(filename, "w") as f:
+            f.write(latex_code)
 
     def plot_dendrogram(self, df=None):
         """Get the dendrogram plot"""
