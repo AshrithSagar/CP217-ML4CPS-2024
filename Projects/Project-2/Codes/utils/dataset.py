@@ -32,7 +32,6 @@ class DatasetLoaderXL:
         self.verbose = verbose
 
         self.dataset = {}
-        self.suburb_df = pd.DataFrame()
 
     def get_verbose(self, verbose):
         if verbose is None:
@@ -83,8 +82,8 @@ class DatasetLoaderXL:
     def get_data(self, suburb_name: str) -> pd.DataFrame:
         """Get the data for a specific suburb as a DataFrame."""
         if suburb_name not in self.dataset:
-            print(f"No data found for suburb: {suburb_name}")
-            return pd.DataFrame()
+            self.console.print(f"No data found for suburb: {suburb_name}")
+            return
 
         data = self.dataset[suburb_name]
         df = pd.DataFrame(
@@ -96,17 +95,13 @@ class DatasetLoaderXL:
 
         df["Category"] = df["Category"].ffill()
         df.drop(columns=["Extra1", "Extra2"], inplace=True)
-        self.suburb_df = df
-        return self.suburb_df
+        return df
 
     def list_categories(self, verbose=None) -> pd.Series:
         """Get categories list"""
         verbose = self.get_verbose(verbose)
-
-        if self.suburb_df.empty:
-            self.get_data(self.suburbs[0])
-
-        self.categories = self.suburb_df["Category"].unique()
+        suburb_df = self.get_data(self.suburbs[0])
+        self.categories = suburb_df["Category"].unique()
 
         if verbose:
             self.console.print("Categories List:", style="bold black")
@@ -115,25 +110,27 @@ class DatasetLoaderXL:
 
     def get_category(self, category: str) -> pd.DataFrame:
         """Filter data for a specific category."""
-        return (
-            self.suburb_df[self.suburb_df["Category"] == category]
-            if not self.suburb_df.empty
-            else pd.DataFrame()
-        )
+        suburb_df = self.get_data(self.suburbs[0])
+        category_df = suburb_df[suburb_df["Category"] == category]
+        return category_df
 
     def list_subcategories(self, category=None, verbose=None) -> pd.Series:
         """Get subcategories list"""
         verbose = self.get_verbose(verbose)
+        if not hasattr(self, "categories"):
+            self.list_categories()
 
-        if self.suburb_df.empty:
-            self.get_data(self.suburbs[0])
+        def get(category):
+            category_df = self.get_category(category)
+            return sorted(category_df["Subcategory"].unique())
 
         if category is None:
-            category = self.suburb_df["Category"].unique()[0]
-
-        self.subcategories = self.suburb_df[self.suburb_df["Category"] == category][
-            "Subcategory"
-        ].unique()
+            # List for all categories
+            self.subcategories = []
+            for category in self.categories:
+                self.subcategories.extend(get(category))
+        else:
+            self.subcategories = get(category)
 
         if verbose:
             self.console.print("Subcategories List:", style="bold black")
@@ -145,9 +142,9 @@ class DatasetLoaderXL:
 
         all_dfs = []
         for suburb in self.suburbs:
-            df = self.get_data(suburb)
-            df = df[df["Category"] == category]
-            df = df.drop(columns=["Category"])
+            suburb_df = self.get_data(suburb)
+            category_df = suburb_df[suburb_df["Category"] == category]
+            df = category_df.drop(columns=["Category"])
             df["Suburb"] = suburb
             all_dfs.append(df)
 
