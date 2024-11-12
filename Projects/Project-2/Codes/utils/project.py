@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.express as px
+import rich
 import seaborn as sns
 from sklearn.decomposition import PCA
 from sklearn.manifold import MDS, TSNE
@@ -36,6 +37,11 @@ class DataProcessor:
         }
         return columns
 
+    def list_columns(self):
+        columns = self.get_columns()
+        for key in columns.keys():
+            print(f"{key}")
+
     def get_verbose(self, verbose):
         if verbose is None:
             return self.verbose
@@ -53,8 +59,7 @@ class DataProcessor:
         nan_cols = df_Data.columns[df_Data.isna().any()].tolist()
         if verbose:
             if nan_cols:
-                print("Columns with NaN values:")
-                print(nan_cols)
+                print(f"Columns with NaN values: {nan_cols}")
             else:
                 print("No NaN values found in the DataFrame.")
 
