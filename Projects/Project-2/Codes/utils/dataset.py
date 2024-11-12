@@ -147,17 +147,26 @@ class DatasetLoaderXL:
         data = []
         for suburb in self.suburbs:
             category_df = self.get_category(category, suburb)
-            df = category_df.drop(columns=["Category"])
-            df["Suburb"] = suburb
-            data.append(df)
+            category_df = category_df.drop(columns=["Category"])
+            category_df["Suburb"] = suburb
+            data.append(category_df)
 
-        data = pd.concat(data, ignore_index=True)
-        data.set_index("Suburb", inplace=True)
-        data = data.groupby("Suburb").apply(
-            lambda x: x.set_index("Subcategory")["Value"]
-        )
+        data = pd.concat(data, ignore_index=False)
+        data.set_index(["Suburb", "Subcategory"], inplace=True)
+        data = data["Value"].unstack(level="Subcategory")
         data = data.sort_index()
+        data.columns.name = category
+        data = data.stack().unstack(level="Suburb")
         return data
+
+    def get_categories_across_all_suburbs(self, categories: List[str]) -> pd.DataFrame:
+        """Get data for a list of categories across all suburbs."""
+        data = []
+        for category in categories:
+            category_df = self.get_category_across_all_suburbs(category)
+            data.append(category_df)
+        combined_data = pd.concat(data, axis=1, keys=categories)
+        return combined_data
 
     def get_subcategory_across_all_suburbs(self, subcategory: str) -> pd.DataFrame:
         """Get data for a specific subcategory across all suburbs."""
@@ -187,15 +196,4 @@ class DatasetLoaderXL:
             data.append(subcategory_df)
 
         data = pd.concat(data, axis=1)
-        return data
-
-    def get_categories_across_all_suburbs(self, categories: List[str]) -> pd.DataFrame:
-        """Get data for a list of categories across all suburbs."""
-        data = []
-        for category in categories:
-            category_df = self.get_category_across_all_suburbs(category)
-            data.append(category_df)
-
-        data = pd.concat(data, axis=1)
-        data = data.stack().unstack(0)
         return data
