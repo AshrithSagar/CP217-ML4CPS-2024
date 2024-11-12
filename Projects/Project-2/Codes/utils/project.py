@@ -69,18 +69,22 @@ class DataProcessor:
 
     def plot_suburbs_in_map(self):
         df = self.df_data
+        center_lat = df["Latitude"].mean()
+        center_lon = df["Longitude"].mean()
+
         fig = px.scatter_mapbox(
             df,
             lat="Latitude",
             lon="Longitude",
             hover_name=df.iloc[:, 0],
             zoom=8,
-            height=500,
-            width=700,
             color=df.index,
         )
-        fig.update_layout(mapbox_style="carto-positron")
-        fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+        fig.update_layout(
+            mapbox_style="carto-positron",
+            mapbox_center={"lat": center_lat, "lon": center_lon},
+            margin={"r": 0, "t": 0, "l": 0, "b": 0},
+        )
         fig.show()
 
 
