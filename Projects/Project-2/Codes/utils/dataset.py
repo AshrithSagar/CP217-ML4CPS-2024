@@ -30,6 +30,12 @@ class DatasetLoaderXL:
         self.console = console
         self.verbose = verbose
 
+    def get_verbose(self, verbose):
+        if verbose is None:
+            return self.verbose
+        else:
+            return verbose
+
     def load_all_datasets(self) -> None:
         """Load all Excel files from the dataset directory using openpyxl."""
         for filename in os.listdir(self.dataset_dir):
@@ -73,17 +79,19 @@ class DatasetLoaderXL:
         self.suburb_df = df
         return self.suburb_df
 
-    def list_categories(self) -> pd.Series:
+    def list_categories(self, verbose=None) -> pd.Series:
         """Get categories list"""
+        verbose = self.get_verbose(verbose)
 
         if self.suburb_df.empty:
             self.get_data(self.list_suburbs()[0])
 
         self.categories = self.suburb_df["Category"].unique()
 
-        self.console.print("Categories List:", style="bold black")
-        for idx, category in enumerate(self.categories, start=1):
-            self.console.print(f"{idx}. {category}", style="bold cyan")
+        if verbose:
+            self.console.print("Categories List:", style="bold black")
+            for idx, category in enumerate(self.categories, start=1):
+                self.console.print(f"{idx}. {category}", style="bold cyan")
 
     def get_category(self, category: str) -> pd.DataFrame:
         """Filter data for a specific category."""
