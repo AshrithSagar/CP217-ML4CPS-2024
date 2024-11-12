@@ -176,3 +176,15 @@ class DatasetLoaderXL:
         data.columns = [subcategory]
         data = data.sort_index()
         return data
+
+    def get_subcategories_across_all_suburbs(
+        self, subcategories: List[str]
+    ) -> pd.DataFrame:
+        """Get data for a list of subcategories across all suburbs."""
+        data = []
+        for subcategory in subcategories:
+            subcategory_df = self.get_subcategory_across_all_suburbs(subcategory)
+            data.append(subcategory_df)
+
+        data = pd.concat(data, axis=1)
+        return data
