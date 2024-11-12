@@ -48,9 +48,8 @@ class DataProcessor:
         else:
             return verbose
 
-    def data_preperation(self, columns, verbose=None):
+    def prepare_data(self, columns, verbose=None):
         verbose = self.get_verbose(verbose)
-
         df_Data = self.df_data[columns]
 
         for column in columns:
@@ -67,50 +66,6 @@ class DataProcessor:
             df_Data.loc[:, col] = self.label_encoder.fit_transform(df_Data[col])
 
         self.df = self.scaler.fit_transform(df_Data)
-
-    def data_preparation(df, columns):
-        # Add the first column (index) to the list of columns if not already included
-        index_values = np.array(df.columns)
-        columns = np.insert(columns, 0, index_values[0], axis=0)
-
-        # Subset the dataframe based on the provided columns
-        df_data = df[columns]
-
-        # Convert columns to numeric where possible, and print NaN columns
-        for column in columns:
-            df_data.iloc[:, column] = pd.to_numeric(df_data[column], errors="ignore")
-
-        # Identify columns with NaN values
-        nan_cols = df_data.columns[df_data.isna().any()].tolist()
-        if nan_cols:
-            print("Columns with NaN values:", nan_cols)
-        else:
-            print("No NaN values found in the DataFrame.")
-
-        # Fill NaN values: numeric columns with their mean, non-numeric with 'Nan'
-        for col in df_data.columns:
-            if pd.api.types.is_numeric_dtype(df_data[col]):
-                df_data[col] = df_data[col].fillna(df_data[col].mean())
-            else:
-                df_data[col] = df_data[col].fillna("Nan")
-
-        # Label encode categorical columns (excluding the index column)
-        label_encoders = {}
-        columns_to_encode = [
-            col
-            for col in df_data.columns
-            if df_data[col].dtype == "object" and col != index_values[0]
-        ]
-
-        for column in columns_to_encode:
-            df_data[column] = df_data[column].astype(str)  # Convert to string
-            le = LabelEncoder()
-            df_data[column] = le.fit_transform(df_data[column])
-
-            label_encoders[column] = le
-            # Store the encoder for potential inverse transform later
-
-        return df_data
 
     def plot_suburbs_in_map(self):
         df = self.df_data
