@@ -4,13 +4,21 @@ dataset.py
 
 import os
 import re
+from math import cos, radians, sin, sqrt
 from typing import List, Union
 
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import scipy.cluster.hierarchy as sch
+import seaborn as sns
 from openpyxl import load_workbook
 from rich.columns import Columns
 from rich.console import Console
-from rich.table import Table
+from scipy.stats import f_oneway
+from sklearn.manifold import MDS
+from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances
+from sklearn.preprocessing import minmax_scale
 
 
 class DatasetLoaderXL:
@@ -197,3 +205,188 @@ class DatasetLoaderXL:
 
         data = pd.concat(data, axis=1)
         return data
+
+
+class DataProcessor:
+    def __init__(self, df: pd.DataFrame, random_state=42) -> None:
+        self.df = df
+        self.random_state = random_state
+
+    def normalize(self):
+        """Normalize the data"""
+        df = self.df
+        df_norm = minmax_scale(df, axis=0)
+        df_norm = pd.DataFrame(df_norm, columns=df.columns, index=df.index)
+        self.df = df_norm
+
+    def get_correlation_matrix(self):
+        """Get the correlation matrix"""
+        return self.df.corr()
+
+    def get_topk_abs_correlations(self, k=None):
+        """Get the top k absolute correlations"""
+        matrix = self.get_correlation_matrix()
+        pairs = matrix.unstack().reset_index()
+        pairs.columns = ["Variable1", "Variable2", "Correlation"]
+        pairs["AbsCorrelation"] = pairs["Correlation"].abs()
+        pairs = pairs[pairs["Variable1"] != pairs["Variable2"]]
+        pairs = pairs.sort_values(by="AbsCorrelation", ascending=True)
+        pairs = pairs[pairs["Variable1"] < pairs["Variable2"]]
+        pairs = pairs.reset_index(drop=True)
+        if k:
+            pairs = pairs.head(k)
+        return pairs
+
+    def run_anova_analysis(self, subcategories):
+        """Run ANOVA analysis"""
+        df = self.df
+        anova_results = {}
+        for subcategory in subcategories:
+            anova_results[subcategory] = f_oneway(
+                *[df[subcategory].values for suburb in df.index]
+            )
+        return anova_results
+
+    def plot_dendrogram(self):
+        """Get the dendrogram plot"""
+        plt.figure(figsize=(10, 7))
+        dendrogram = sch.dendrogram(sch.linkage(self.df, method="ward"))
+        plt.title("Dendrogram")
+        plt.xlabel("Suburbs")
+        plt.ylabel("Euclidean distances")
+        plt.show()
+
+    def get_similarity_matrix(self, metric):
+        """Get the similarity matrix"""
+
+        if metric == "cosine":
+            metric = cosine_similarity
+        elif metric == "euclidean":
+            metric = lambda x: 1 / (1 + euclidean_distances(x))
+
+        df = self.df
+        return pd.DataFrame(metric(df), index=df.index, columns=df.index)
+
+    def get_similar_suburbs(self, similarity_matrix, n_neighbours=5):
+        similarity_matrix = similarity_matrix.copy()
+        np.fill_diagonal(similarity_matrix.values, 0)
+        similar_suburbs = similarity_matrix.apply(
+            lambda x: x.nlargest(n_neighbours).index.tolist(), axis=1
+        )
+        return similar_suburbs
+
+    def run_mds_and_plot(
+        self,
+        similarity_matrix,
+        n_components=2,
+    ):
+        mds = MDS(
+            n_components=n_components,
+            dissimilarity="precomputed",
+            random_state=self.random_state,
+        )
+        dissimilarity_matrix = 1 - similarity_matrix
+        mds_results = mds.fit_transform(dissimilarity_matrix)
+        mds_df = pd.DataFrame(
+            mds_results,
+            index=similarity_matrix.index,
+            columns=[f"MDS{i+1}" for i in range(n_components)],
+        )
+
+        plt.figure(figsize=(10, 7))
+        sns.scatterplot(x="MDS1", y="MDS2", data=mds_df)
+        for i in mds_df.index:
+            plt.text(mds_df.loc[i, "MDS1"], mds_df.loc[i, "MDS2"], i, fontsize=9)
+        plt.title("MDS Plot")
+        plt.xlabel("MDS1")
+        plt.ylabel("MDS2")
+        plt.show()
+
+        return mds_df
+
+
+class LocationProcessor:
+    def __init__(self, location_df: pd.DataFrame) -> None:
+        self.location_df = location_df
+        self.coordinates = None
+
+    def extract_coordinates(self, location):
+        match = re.search(r"(\d+)km ([A-Z]+) of Melbourne", location)
+        if match:
+            distance = int(match.group(1))
+            direction = match.group(2)
+            angle = {
+                "N": 0,
+                "NNE": 22.5,
+                "NE": 45,
+                "ENE": 67.5,
+                "E": 90,
+                "ESE": 112.5,
+                "SE": 135,
+                "SSE": 157.5,
+                "S": 180,
+                "SSW": 202.5,
+                "SW": 225,
+                "WSW": 247.5,
+                "W": 270,
+                "WNW": 292.5,
+                "NW": 315,
+                "NNW": 337.5,
+            }[direction]
+            return distance, angle
+        return None, None
+
+    def polar_to_cartesian(self, distance, angle):
+        angle_rad = radians(angle)
+        x = distance * cos(angle_rad)
+        y = distance * sin(angle_rad)
+        return x, y
+
+    def get_coordinates(self):
+        coordinates = {}
+        for suburb, row in self.location_df.iterrows():
+            distance, angle = self.extract_coordinates(row["Location"])
+            if distance is not None and angle is not None:
+                coordinates[suburb] = self.polar_to_cartesian(distance, angle)
+        self.coordinates = coordinates
+        return self.coordinates
+
+    def calculate_proximity_matrix(self):
+        coordinates = self.coordinates
+        suburbs = list(coordinates.keys())
+        proximity_matrix = pd.DataFrame(index=suburbs, columns=suburbs)
+        for suburb1 in suburbs:
+            for suburb2 in suburbs:
+                x1, y1 = coordinates[suburb1]
+                x2, y2 = coordinates[suburb2]
+                distance = sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+                proximity_matrix.loc[suburb1, suburb2] = distance
+        return proximity_matrix
+
+    def rotate_coordinates(self, coordinates, angle):
+        angle_rad = radians(angle)
+        rotated_coords = {}
+        for suburb, (x, y) in coordinates.items():
+            x_rot = x * cos(angle_rad) - y * sin(angle_rad)
+            y_rot = x * sin(angle_rad) + y * cos(angle_rad)
+            rotated_coords[suburb] = (x_rot, y_rot)
+        return rotated_coords
+
+    def reflect_coordinates(self, coordinates):
+        reflected_coords = {}
+        for suburb, (x, y) in coordinates.items():
+            reflected_coords[suburb] = (x, -y)
+        return reflected_coords
+
+    def plot_coordinates(self, coordinates):
+        plt.figure(figsize=(10, 10))
+        for suburb, (x, y) in coordinates.items():
+            plt.scatter(x, y, label=suburb)
+            plt.text(x, y, suburb, fontsize=9)
+
+        plt.title("Suburb Coordinates")
+        plt.xlabel("X Coordinate")
+        plt.ylabel("Y Coordinate")
+        plt.grid(True)
+        # plt.legend(loc='best', bbox_to_anchor=(1, 1))
+        plt.show()
