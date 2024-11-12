@@ -124,7 +124,9 @@ class DatasetLoaderXL:
         category_df = suburb_df[suburb_df["Category"] == category]
         return category_df
 
-    def list_subcategories(self, category=None, verbose=None) -> pd.Series:
+    def list_subcategories(
+        self, category=None, console_print=True, verbose=None
+    ) -> pd.Series:
         """Get subcategories list"""
         verbose = self.get_verbose(verbose)
         if not hasattr(self, "categories"):
@@ -145,7 +147,10 @@ class DatasetLoaderXL:
         if verbose:
             self.console.print("Subcategories List:", style="bold black")
             for idx, subcategory in enumerate(subcategories, start=1):
-                self.console.print(f"{idx}. {subcategory}", style="bold cyan")
+                if console_print:
+                    self.console.print(f"{idx}. {subcategory}", style="bold cyan")
+                else:
+                    print(subcategory)
 
         return subcategories
 
@@ -275,7 +280,7 @@ class DataProcessor:
         )
         return similar_suburbs
 
-    def run_mds_and_plot(
+    def run_metric_mds_and_plot(
         self,
         similarity_matrix,
         n_components=2,
