@@ -158,3 +158,21 @@ class DatasetLoaderXL:
         )
         data = data.sort_index()
         return data
+
+    def get_subcategory_across_all_suburbs(self, subcategory: str) -> pd.DataFrame:
+        """Get data for a specific subcategory across all suburbs."""
+
+        data = []
+        for suburb in self.suburbs:
+            suburb_df = self.get_data(suburb)
+            subcategory_df = suburb_df[suburb_df["Subcategory"] == subcategory]
+            df = subcategory_df.drop(columns=["Subcategory"])
+            df["Suburb"] = suburb
+            data.append(df)
+
+        data = pd.concat(data, ignore_index=True)
+        data = data.drop(columns=["Category"])
+        data.set_index("Suburb", inplace=True)
+        data.columns = [subcategory]
+        data = data.sort_index()
+        return data
