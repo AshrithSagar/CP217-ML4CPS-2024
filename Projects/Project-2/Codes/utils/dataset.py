@@ -229,14 +229,14 @@ class DataProcessor:
         """Get the correlation matrix"""
         return self.df.corr()
 
-    def get_topk_abs_correlations(self, k=None):
+    def get_topk_abs_correlations(self, k=None, ascending=True):
         """Get the top k absolute correlations"""
         matrix = self.get_correlation_matrix()
         pairs = matrix.unstack().reset_index()
         pairs.columns = ["Variable1", "Variable2", "Correlation"]
         pairs["AbsCorrelation"] = pairs["Correlation"].abs()
         pairs = pairs[pairs["Variable1"] != pairs["Variable2"]]
-        pairs = pairs.sort_values(by="AbsCorrelation", ascending=True)
+        pairs = pairs.sort_values(by="AbsCorrelation", ascending=ascending)
         pairs = pairs[pairs["Variable1"] < pairs["Variable2"]]
         pairs = pairs.reset_index(drop=True)
         if k:
