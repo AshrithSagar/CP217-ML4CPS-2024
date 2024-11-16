@@ -18,7 +18,7 @@ We have the logistic function as
     \frac{1}{1+e^{-x}}
     \\
     \implies
-    \sigma'\left(x\right)
+    \frac{d}{dx} \sigma\left(x\right)
      & =
     -\frac{1}{\left(1+e^{-x}\right)^2} \cdot e^{-x} \cdot (-1)
     =
@@ -36,7 +36,7 @@ We have the logistic function as
 \end{align*}
 \begin{align*}
     \implies
-    \nabla_{\theta} \mathcal{L}(\theta)
+    \frac{d}{d\theta} \mathcal{L}(\theta)
      & =
     -\frac{1}{m} \sum_{i=1}^{m}
     \left(
@@ -85,9 +85,9 @@ We have the logistic function as
 The Hessian then is
 \begin{align*}
     \implies
-    \mathbf{H}(\theta)
+    \mathcal{H}(\theta)
      & =
-    \nabla_{\theta}^2 \mathcal{L}(\theta)
+    \frac{d^2}{d\theta^2} \mathcal{L}(\theta)
     =
     -\frac{1}{m} \sum_{i=1}^{m}
     \Big(
@@ -110,7 +110,7 @@ The Hessian then is
 \begin{equation*}
     \therefore
     \boxed{
-        \mathbf{H}(\theta)
+        \mathcal{H}(\theta)
         =
         \frac{1}{m} \sum_{i=1}^{m}
         \sigma\left(\theta^{T} x^{(i)}\right) \cdot \left(1-\sigma\left(\theta^{T} x^{(i)}\right)\right)
