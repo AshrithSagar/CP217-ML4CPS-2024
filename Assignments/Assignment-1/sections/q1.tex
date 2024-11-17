@@ -11,21 +11,21 @@ P.S - Positive Semidefiniteness of the Hessian means that the loss function is c
 
 \subsection*{Solution}
 
-We have the logistic function as
+The usual logistic function is given by
 \begin{align*}
-    \sigma\left(x\right)
+    \sigma\left(t\right)
      & =
-    \frac{1}{1+e^{-x}}
+    \frac{1}{1+e^{-t}}
     \\
     \implies
-    \frac{d}{dx} \sigma\left(x\right)
+    \frac{d}{dt} \sigma\left(t\right)
      & =
-    -\frac{1}{\left(1+e^{-x}\right)^2} \cdot e^{-x} \cdot (-1)
+    -\frac{1}{{\left(1+e^{-t}\right)}^2} \cdot e^{-t} \cdot (-1)
     =
-    \frac{1}{\left(1+e^{-x}\right)}
-    \frac{e^{-x}}{\left(1+e^{-x}\right)}
+    \frac{1}{\left(1+e^{-t}\right)}
+    \frac{e^{-t}}{\left(1+e^{-t}\right)}
     =
-    \sigma\left(x\right) \cdot \left(1-\sigma\left(x\right)\right)
+    \sigma\left(t\right) \cdot \left(1-\sigma\left(t\right)\right)
     \\
     \implies
     h_{\theta}\left(x^{(i)}\right)
@@ -33,17 +33,28 @@ We have the logistic function as
     \sigma\left(\theta^{T} x^{(i)}\right)
     =
     \frac{1}{1+e^{-\theta^{T} x^{(i)}}}
+    \\
+    \implies
+    \frac{\partial}{\partial \theta} h_{\theta}\left(x^{(i)}\right)
+     & =
+    h_{\theta}\left(x^{(i)}\right) \cdot \left(1-h_{\theta}\left(x^{(i)}\right)\right) \cdot x^{(i)}
 \end{align*}
+Now, the derivate of the loss function is
 \begin{align*}
     \implies
-    \frac{d}{d\theta} \mathcal{L}(\theta)
+    \frac{\partial}{\partial \theta} \mathcal{L}(\theta)
      & =
+    -\frac{1}{m} \sum_{i=1}^{m}
+    y^{(i)} \frac{\partial}{\partial \theta} \log \left(h_{\theta}\left(x^{(i)}\right)\right)
+    +
+    \left(1-y^{(i)}\right) \frac{\partial}{\partial \theta} \log \left(1-h_{\theta}\left(x^{(i)}\right)\right)
+    \\ & =
     -\frac{1}{m} \sum_{i=1}^{m}
     \left(
     y^{(i)}
     \cdot \frac{1}{\cancel{h_{\theta}\left(x^{(i)}\right)}}
-    \cdot \cancel{\sigma\left(\theta^{T} x^{(i)}\right)}
-    \cdot \left(1-\sigma\left(\theta^{T} x^{(i)}\right)\right)
+    \cdot \cancel{h_{\theta}\left(x^{(i)}\right)}
+    \cdot \left(1-h_{\theta}\left(x^{(i)}\right)\right)
     \cdot x^{(i)}
     \right.
     \\ & \qquad
@@ -52,60 +63,69 @@ We have the logistic function as
     \left(1-y^{(i)}\right)
     \cdot \frac{1}{\cancel{(1-h_{\theta}\left(x^{(i)}\right))}}
     \cdot (-1)
-    \cdot \sigma\left(\theta^{T} x^{(i)}\right) \cdot \cancel{\left(1-\sigma\left(\theta^{T} x^{(i)}\right)\right)}
+    \cdot h_{\theta}\left(x^{(i)}\right)
+    \cdot \cancel{\left(1-h_{\theta}\left(x^{(i)}\right)\right)}
     \cdot x^{(i)}
     \right)
     \\ & =
     -\frac{1}{m} \sum_{i=1}^{m}
     \left(
-    y^{(i)} \cdot \left(1-\sigma\left(\theta^{T} x^{(i)}\right)\right) \cdot x^{(i)}
+    y^{(i)} \cdot \left(1-h_{\theta}\left(x^{(i)}\right)\right) \cdot x^{(i)}
     -
-    \left(1-y^{(i)}\right) \cdot \sigma\left(\theta^{T} x^{(i)}\right) \cdot x^{(i)}
+    \left(1-y^{(i)}\right) \cdot h_{\theta}\left(x^{(i)}\right) \cdot x^{(i)}
     \right)
-    \\ & =
+\end{align*}
+\begin{align*}
+     & =
     -\frac{1}{m} \sum_{i=1}^{m}
     \Big(
     y^{(i)} \cdot x^{(i)}
     -
-    \cancel{y^{(i)} \sigma\left(\theta^{T} x^{(i)}\right) \cdot x^{(i)}}
-    \\ & \qquad \qquad \quad
+    \cancel{y^{(i)} h_{\theta}\left(x^{(i)}\right) \cdot x^{(i)}}
     -
-    \sigma\left(\theta^{T} x^{(i)}\right) \cdot x^{(i)}
+    h_{\theta}\left(x^{(i)}\right) \cdot x^{(i)}
     +
-    \cancel{y^{(i)} \sigma\left(\theta^{T} x^{(i)}\right) \cdot x^{(i)}}
+    \cancel{y^{(i)} h_{\theta}\left(x^{(i)}\right) \cdot x^{(i)}}
     \Big)
     \\ & =
     -\frac{1}{m} \sum_{i=1}^{m}
     \left(
     y^{(i)} \cdot x^{(i)}
     -
-    \sigma\left(\theta^{T} x^{(i)}\right) \cdot x^{(i)}
+    h_{\theta}\left(x^{(i)}\right) \cdot x^{(i)}
     \right)
+    \\
+    \implies
+    \frac{\partial}{\partial \theta} \mathcal{L}(\theta)
+     & =
+    \frac{1}{m} \sum_{i=1}^{m}
+    \left(
+    h_{\theta}\left(x^{(i)}\right)
+    -
+    y^{(i)}
+    \right)
+    \cdot x^{(i)}
 \end{align*}
+
 The Hessian then is
 \begin{align*}
     \implies
     \mathcal{H}(\theta)
      & =
-    \frac{d^2}{d\theta^2} \mathcal{L}(\theta)
+    \frac{\partial^2}{\partial \theta^2} \mathcal{L}(\theta)
     =
-    -\frac{1}{m} \sum_{i=1}^{m}
-    \Big(
-    \cancel{\nabla_{\theta} \left(y^{(i)} \cdot x^{(i)}\right)}
+    \frac{1}{m} \sum_{i=1}^{m}
+    \left(
+    \frac{\partial}{\partial \theta} h_{\theta}\left(x^{(i)}\right) \cdot x^{(i)}
     -
-    \nabla_{\theta} \left(\sigma\left(\theta^{T} x^{(i)}\right) \cdot x^{(i)}\right)
-    \Big)
+    \cancel{\frac{\partial}{\partial \theta} y^{(i)} \cdot x^{(i)}}
+    \right)
     \\ & =
     \frac{1}{m} \sum_{i=1}^{m}
-    \nabla_{\theta} \left(\sigma\left(\theta^{T} x^{(i)}\right) \cdot x^{(i)}\right)
+    \frac{\partial}{\partial \theta} h_{\theta}\left(x^{(i)}\right) \cdot x^{(i)}
     \\ & =
     \frac{1}{m} \sum_{i=1}^{m}
-    \sigma'\left(\theta^{T} x^{(i)}\right) \cdot x^{(i)}
-    \\ & =
-    \frac{1}{m} \sum_{i=1}^{m}
-    \sigma\left(\theta^{T} x^{(i)}\right) \cdot \left(1-\sigma\left(\theta^{T} x^{(i)}\right)\right)
-    \cdot x^{(i)}
-    \cdot x^{(i)}
+    h_{\theta}\left(x^{(i)}\right) \cdot \left(1-h_{\theta}\left(x^{(i)}\right)\right) \cdot x^{(i)} \cdot x^{(i)}
 \end{align*}
 \begin{equation*}
     \therefore
@@ -113,9 +133,9 @@ The Hessian then is
         \mathcal{H}(\theta)
         =
         \frac{1}{m} \sum_{i=1}^{m}
-        \sigma\left(\theta^{T} x^{(i)}\right) \cdot \left(1-\sigma\left(\theta^{T} x^{(i)}\right)\right)
+        h_{\theta}\left(x^{(i)}\right) \cdot \left(1-h_{\theta}\left(x^{(i)}\right)\right)
         \cdot {\left(x^{(i)}\right)}^2
     }
 \end{equation*}
-From the above expression, we can see that this sum is non-negative, since the coefficients are all non-negative, since the logistic function is bounded between 0 and 1, and that the square of the feature vector is non-negative.
+From the above expression, we can see that this sum is non-negative, since the coefficients are all non-negative, since the logistic function is bounded between 0 and 1, and that the square function is non-negative.
 Hence, \underline{the Hessian is positive semidefinite}, and the loss function is convex.
