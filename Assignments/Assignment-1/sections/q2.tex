@@ -1,17 +1,19 @@
 \section*{Problem 2}
 
 \textbf{(Locally weighted linear regression)}\\
-Consider a linear regression problem in which we want to weight different training examples differently. Specifically, suppose we want to minimize
-\[
+Consider a linear regression problem in which we want to weight different training examples differently.
+Specifically, suppose we want to minimize
+\begin{equation*}
     \mathcal{L}(\theta)=\frac{1}{2} \sum_{i=1}^{m} w^{(i)}{\left(\theta^{T} x^{(i)}-y^{(i)}\right)}^{2}
-\]
-here \( w^{(i)} \) is the weight given to \( i^{\text {th }} \) training example.\\
+\end{equation*}
+here \( w^{(i)} \) is the weight given to \( i^{\text {th }} \) training example.
+
 \begin{enumerate}[label= (\alph*), noitemsep, topsep=0pt]
     \item Show that the loss \( \mathcal{L}(\theta) \) can be written as
           \[
               \mathcal{L}(\theta)=(X \theta-y)^{T} W(X \theta-y)
           \]
-          for an appropriate weight matrix W , where X and y are the data matrix and label matrix, respectively.
+          for an appropriate weight matrix W, where X and y are the data matrix and label matrix, respectively.
 
     \item  By finding the derivative \( \nabla_{\theta} \mathcal{L}(\theta) \), generalize the normal equation to weighted setting, and give the value of \( \theta \) that minimizes \( \mathcal{L}(\theta) \).
 
@@ -25,6 +27,132 @@ here \( w^{(i)} \) is the weight given to \( i^{\text {th }} \) training example
 \subsection*{Solution}
 
 \subsubsection*{(a) Loss \( \mathcal{L}(\theta) \)}
+
+Given the loss function
+\begin{equation*}
+    \mathcal{L}(\theta)
+    =
+    \frac{1}{2}
+    \sum_{i=1}^{m}
+    w^{(i)}{\left(\theta^{T} x^{(i)}-y^{(i)}\right)}^{2}
+\end{equation*}
+we have the data matrix \( X_{m \times n} \), the label vector \( y_{m \times 1} \) and the parameter vector \( \theta_{n \times 1} \) as
+\begin{equation*}
+    X
+    =
+    \begin{bmatrix}
+        {\left(x^{(1)}\right)}^\top \\
+        {\left(x^{(2)}\right)}^\top \\
+        \vdots                      \\
+        {\left(x^{(m)}\right)}^\top
+    \end{bmatrix}
+    , x^{(i)} \in \mathbb{R}^{n}
+    , \qquad
+    y
+    =
+    \begin{bmatrix}
+        y^{(1)} \\
+        y^{(2)} \\
+        \vdots  \\
+        y^{(m)}
+    \end{bmatrix}
+    , y^{(i)} \in \mathbb{R}
+    , \qquad
+    \theta
+    =
+    \begin{bmatrix}
+        \theta_{1} \\
+        \theta_{2} \\
+        \vdots     \\
+        \theta_{n}
+    \end{bmatrix}
+    , \theta_{j} \in \mathbb{R}
+\end{equation*}
+
+We can then see that
+\begin{equation*}
+    (X \theta - y)
+    =
+    \begin{bmatrix}
+        {\left(x^{(1)}\right)}^\top \theta
+        - y^{(1)}
+        \\
+        {\left(x^{(2)}\right)}^\top \theta
+        - y^{(2)}
+        \\
+        \vdots
+        \\
+        {\left(x^{(m)}\right)}^\top \theta
+        - y^{(m)}
+    \end{bmatrix}
+\end{equation*}
+and with
+\begin{equation*}
+    W_{m \times m}
+    =
+    \begin{bmatrix}
+        w^{(1)} & 0       & \cdots & 0       \\
+        0       & w^{(2)} & \cdots & 0       \\
+        \vdots  & \vdots  & \ddots & \vdots  \\
+        0       & 0       & \cdots & w^{(m)}
+    \end{bmatrix}
+\end{equation*}
+\begin{align*}
+    \implies
+     &
+    {(X \theta - y)}^\top W (X \theta - y)
+    \\ & =
+    \begin{bmatrix}
+        {\left(x^{(1)}\right)}^\top \theta - y^{(1)} \\
+        {\left(x^{(2)}\right)}^\top \theta - y^{(2)} \\
+        \vdots                                       \\
+        {\left(x^{(m)}\right)}^\top \theta - y^{(m)}
+    \end{bmatrix}^\top
+    \begin{bmatrix}
+        w^{(1)} & 0       & \cdots & 0       \\
+        0       & w^{(2)} & \cdots & 0       \\
+        \vdots  & \vdots  & \ddots & \vdots  \\
+        0       & 0       & \cdots & w^{(m)}
+    \end{bmatrix}
+    \begin{bmatrix}
+        {\left(x^{(1)}\right)}^\top \theta - y^{(1)} \\
+        {\left(x^{(2)}\right)}^\top \theta - y^{(2)} \\
+        \vdots                                       \\
+        {\left(x^{(m)}\right)}^\top \theta - y^{(m)}
+    \end{bmatrix}
+    \\ & =
+    \begin{bmatrix}
+        {\left(x^{(1)}\right)}^\top \theta - y^{(1)} \\
+        {\left(x^{(2)}\right)}^\top \theta - y^{(2)} \\
+        \vdots                                       \\
+        {\left(x^{(m)}\right)}^\top \theta - y^{(m)}
+    \end{bmatrix}^\top
+    \begin{bmatrix}
+        w^{(1)}{\left({\left(x^{(1)}\right)}^\top \theta - y^{(1)}\right)} \\
+        w^{(2)}{\left({\left(x^{(2)}\right)}^\top \theta - y^{(2)}\right)} \\
+        \vdots                                                             \\
+        w^{(m)}{\left({\left(x^{(m)}\right)}^\top \theta - y^{(m)}\right)}
+    \end{bmatrix}
+    \\ & =
+    w^{(1)} {\left({\left(x^{(1)}\right)}^\top \theta - y^{(1)}\right)}^\top \left({\left(x^{(1)}\right)}^\top \theta - y^{(1)}\right)
+    +
+    w^{(2)} {\left({\left(x^{(2)}\right)}^\top \theta - y^{(2)}\right)}^\top \left({\left(x^{(2)}\right)}^\top \theta - y^{(2)}\right)
+    \\ & \qquad +
+    \cdots
+    +
+    w^{(m)} {\left({\left(x^{(m)}\right)}^\top \theta - y^{(m)}\right)}^\top \left({\left(x^{(m)}\right)}^\top \theta - y^{(m)} \right)
+    \\ & =
+    \sum_{i=1}^{m}
+    w^{(i)} {\left({\left(x^{(i)}\right)}^\top \theta - y^{(i)}\right)}^\top \left({\left(x^{(i)}\right)}^\top \theta - y^{(i)} \right)
+    =
+    \sum_{i=1}^{m}
+    w^{(i)} {\left(\theta^\top x^{(i)}-y^{(i)}\right)}^{2}
+    =
+    \mathcal{L}(\theta)
+\end{align*}
+since \( \left({\left(x^{(i)}\right)}^\top \theta - y^{(i)} \right) \) is a scalar, and hence \( {\left(x^{(i)}\right)}^\top \theta = \theta^\top x^{(i)} \).
+
+Hence, we have the result, that \( \boxed{\mathcal{L}(\theta) = {(X \theta - y)}^\top W (X \theta - y)} \).
 
 \subsubsection*{(b) Generalized normal equation}
 
