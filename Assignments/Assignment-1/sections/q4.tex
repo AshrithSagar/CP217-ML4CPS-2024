@@ -37,3 +37,7 @@ which implies that the tanh activation function is a scaled and shifted version 
 Hence, a neural network with the usual sigmoid activations can be replaced by another neural network with only tanh activations without altering the input-output relations for any data.
 
 \subsubsection*{(b) 3-layer MLP with all linear layers}
+
+We can see that the given data points form an XOR pattern, which is known to not be linearly separable by a single layer perceptron.
+Since composition of linear transformations is still a linear transformation, a 3-layer MLP with all linear layers is equivalent to a single layer perceptron.
+Hence, a 3-layer MLP with all linear layers is as good as a linear classifier with a single layer, and hence, \underline{cannot learn to separate the data} in a 2D feature space.
