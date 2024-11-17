@@ -1,6 +1,6 @@
 \section*{Problem 4}
 
-\textbf{(Neural Networks-I)}\\
+\textbf{(Neural Networks-I)}
 \begin{enumerate}[label= (\alph*), noitemsep, topsep=0pt]
     \item Can a neural network with the usual sigmoid activations be replaced by another neural network with only tanh activations without altering the input-output relations for any data?
 
@@ -12,5 +12,28 @@
 \subsection*{Solution}
 
 \subsubsection*{(a) Replacing sigmoid activations with tanh activations}
+
+The sigmoid activation function is given by
+\begin{equation*}
+    \sigma(x)
+    = \frac{1}{1 + e^{-x}}
+\end{equation*}
+and the tanh activation function is given by
+\begin{equation*}
+    \tanh(x)
+    = \frac{e^x - e^{-x}}{e^x + e^{-x}}
+\end{equation*}
+We can see the relation that
+\begin{equation*}
+    \tanh(x)
+    = 2\sigma(2x) - 1
+\end{equation*}
+or equivalently
+\begin{equation*}
+    \sigma(x)
+    = \frac{1}{2} + \frac{1}{2} \tanh \left( \frac{x}{2} \right)
+\end{equation*}
+which implies that the tanh activation function is a scaled and shifted version of the sigmoid activation function.
+Hence, a neural network with the usual sigmoid activations can be replaced by another neural network with only tanh activations without altering the input-output relations for any data.
 
 \subsubsection*{(b) 3-layer MLP with all linear layers}
