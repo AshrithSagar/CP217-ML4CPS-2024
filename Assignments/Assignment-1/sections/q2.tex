@@ -191,3 +191,50 @@ The generalized normal equation is
 Solving this equation for \( \theta \) gives the maximum likelihood estimate of \( \theta \) in a weighted linear regression problem.
 
 \subsubsection*{(c) Maximum likelihood estimate of \( \theta \)}
+
+Given the model
+\begin{equation*}
+    p\left(y^{(i)} \mid x^{(i)} ; \theta\right)=\frac{1}{\sqrt{2 \pi} \sigma^{(i)}} \exp \left(-\frac{{\left(y^{(i)}-\theta^{T} x^{(i)}\right)}^{2}}{2{\left(\sigma^{(i)}\right)}^{2}}\right)
+\end{equation*}
+where \( \sigma^{(i)} \) is the variance for the \( i \)th sample.
+
+The likelihood function then, given that the samples are independent, can be expressed as the product of the likelihoods of individual samples, and we have
+\begin{align*}
+    \mathcal{L}(\theta)
+     & =
+    \prod_{i=1}^{m}
+    p\left(y^{(i)} \mid x^{(i)} ; \theta\right)
+    \\ & =
+    \prod_{i=1}^{m}
+    \frac{1}{\sqrt{2 \pi} \sigma^{(i)}} \exp \left(-\frac{{\left(y^{(i)}-\theta^{T} x^{(i)}\right)}^{2}}{2{\left(\sigma^{(i)}\right)}^{2}}\right)
+    \\ & =
+    \frac{1}{\left(2 \pi\right)^{m/2} \prod_{i=1}^{m} \sigma^{(i)}}
+    \exp \left(
+    -\frac{1}{2}
+    \sum_{i=1}^{m}
+    \frac{{\left(y^{(i)}-\theta^{T} x^{(i)}\right)}^{2}}{{\left(\sigma^{(i)}\right)}^{2}}
+    \right)
+    \\
+    \implies
+    \log \mathcal{L}(\theta)
+     & =
+    -\frac{m}{2} \log(2 \pi) - \sum_{i=1}^{m} \log \left( \sigma^{(i)} \right)
+    -\frac{1}{2}
+    \sum_{i=1}^{m}
+    \frac{{\left(y^{(i)}-\theta^{T} x^{(i)}\right)}^{2}}{{\left(\sigma^{(i)}\right)}^{2}}
+    \\
+    \implies
+    \frac{\partial}{\partial \theta} \log \mathcal{L}(\theta)
+     & =
+    \frac{1}{2}
+    \sum_{i=1}^{m}
+    \frac{2}{\left(\sigma^{(i)}\right)^{2}}
+    \left(y^{(i)}-\theta^{T} x^{(i)}\right)
+    x^{(i)}
+    =
+    \sum_{i=1}^{m}
+    \frac{1}{\left(\sigma^{(i)}\right)^{2}}
+    \left(y^{(i)}-\theta^{T} x^{(i)}\right)
+    x^{(i)}
+\end{align*}
+which is the same as the gradient of the loss function in part (b) with \( w^{(i)} = \cfrac{1}{\left(\sigma^{(i)}\right)^{2}} \).
