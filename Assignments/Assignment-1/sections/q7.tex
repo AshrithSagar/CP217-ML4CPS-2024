@@ -33,8 +33,62 @@ The Lagrangian \( \mathcal{L} \) of the \( l_{2} \) norm soft margin SVM optimiz
     \\ & =
     \frac{1}{2}\|w\|^{2}+\frac{C}{2} \sum_{i=1}^{m} \xi_{i}^{2}
     - \sum_{i=1}^{m} \alpha_{i} \left[ y^{(i)}\left(w^{T} x^{(i)}+b\right) - 1 + \xi_{i} \right]
+    \\ & =
+    \frac{1}{2}\|w\|^{2}+\frac{C}{2} \sum_{i=1}^{m} \xi_{i}^{2}
+    - \sum_{i=1}^{m} \alpha_{i} y^{(i)} \left(w^{T} x^{(i)}+b\right)
+    + \sum_{i=1}^{m} \alpha_{i} - \sum_{i=1}^{m} \alpha_{i} \xi_{i}
+    \\
+    \implies
+    \mathcal{L}
+     & =
+    \frac{1}{2}\|w\|^{2}+\frac{C}{2} \sum_{i=1}^{m} \xi_{i}^{2}
+    - \sum_{i=1}^{m} \alpha_{i} y^{(i)} w^{T} x^{(i)}
+    - \sum_{i=1}^{m} \alpha_{i} y^{(i)} b
+    + \sum_{i=1}^{m} \alpha_{i}
+    - \sum_{i=1}^{m} \alpha_{i} \xi_{i}
 \end{align*}
 
 \subsubsection*{(c) Minimizing the Lagrangian with respect to \( w, b \), and \( \xi \)}
+
+With respect to \( w \), \( b \), and \( \xi \), the partial derivatives of the Lagrangian \( \mathcal{L} \) need to be set to zero, and we get
+\begin{align*}
+    \implies
+    \nabla_{w} \mathcal{L}
+     & =
+    w - \sum_{i=1}^{m} \alpha_{i} y^{(i)} x^{(i)}
+    = 0
+    \implies w = \sum_{i=1}^{m} \alpha_{i} y^{(i)} x^{(i)}
+    \\
+    \implies
+    \frac{\partial \mathcal{L}}{\partial b}
+     & =
+    - \sum_{i=1}^{m} \alpha_{i} y^{(i)}
+    = 0
+    \implies \sum_{i=1}^{m} \alpha_{i} y^{(i)} = 0
+    \\
+    \implies
+    \nabla_{\xi} \mathcal{L}
+     & =
+    C \xi - \alpha
+    = 0
+    \implies \alpha = C \xi
+\end{align*}
+where \( \alpha = {\left[ \alpha_{1}, \ldots, \alpha_{m} \right]}^\top \) and \( \xi = {\left[ \xi_{1}, \ldots, \xi_{m} \right]}^\top \).
+
+Hence, the conditions to minimise the Lagrangian with respect to \( w, b, \) and \( \xi \) are
+\begin{align*}
+     &
+    w
+    =
+    \sum_{i=1}^{m} \alpha_{i} y^{(i)} x^{(i)}
+    \\ &
+    \sum_{i=1}^{m} \alpha_{i} y^{(i)}
+    =
+    0
+    \\ &
+    \alpha
+    =
+    C \xi
+\end{align*}
 
 \subsubsection*{(d) The dual of the \( l_{2} \) norm soft margin SVM optimization problem}
