@@ -1,3 +1,30 @@
 \section*{Problem 2}
 
+\textbf{EM for GMM}\\
+Consider a K-component Gaussian mixture model with
+\[
+    p(x)=\sum_{k=1}^{K} \Pi_{k} \mathcal{N}\left(x \mid \mu_{k}, \Sigma_{k}\right)
+\]
+Here, \( \Pi_{k}=P\left(z_{k}=1\right) \) is the probability that the datapoint x belongs to cluster k.
+Let there be N datapoints \( \left \{ x_{1}, x_{2} \ldots, x_{N}\right \} \).
+We will denote the cluster responsibility of a datapoint \( x_{n} \) to a cluster k by the expression
+\[
+    \gamma\left(z_{n k}\right)=\frac{\Pi_{k} \mathcal{N}\left(x_{n} \mid \mu_{k}, \Sigma_{k}\right)}{\sum_{k=1}^{K} \Pi_{k} \mathcal{N}\left(x_{n} \mid \mu_{k}, \Sigma_{k}\right)}
+\]
+Assuming that in each iteration of the EM algorithm, the cluster responsibilities, \( \gamma\left(z_{n k}\right) \) remain constant, we need to find the update for the M-step of the EM algorithm for the means, variances, and the new cluster responsibilities.
+Show that
+\[
+    \begin{gathered}
+        \mu_{k}^{\text {new }}=\frac{1}{N_{k}} \sum_{n=1}^{N} \gamma\left(z_{n k}\right) x_{n} \\
+        \Sigma_{k}^{\text {new }}=\frac{1}{N_{k}} \sum_{n=1}^{N} \gamma\left(z_{n k}\right)\left(x_{n}-\mu_{k}^{\text {new }}\right)\left(x_{n}-\mu_{k}^{\text {new }}\right)^{T} \\
+        \Pi_{k}^{\text {new }}=\frac{N_{k}}{N}
+    \end{gathered}
+\]
+where
+\[
+    N_{k}=\sum_{n=1}^{N} \gamma\left(z_{n k}\right)
+\]
+Hint: You can start with showing the above results for a single datapoint.
+Matrix manipulation results from ``Matrix Cookbook'' can be directly used.
+
 \subsection*{Solution}

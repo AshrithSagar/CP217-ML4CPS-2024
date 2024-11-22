@@ -1,3 +1,23 @@
 \section*{Problem 4}
 
+\textbf{Spectral Clustering}\\
+In this question, we will explore the properties of the Graph Laplacian, \( \mathcal{L} \) used in spectral clustering.
+
+\begin{enumerate}[label= (\alph*), noitemsep, topsep=0pt]
+    \item With the definition of the Graph Laplacian, \( \mathcal{L} \) discussed in class, show that for any vector \( f \in \mathbb{R}^{n} \) we have
+          \[
+              f^{T} L f=\frac{1}{2} \sum_{i, j=1}^{n} w_{i j}\left(f_{i}-f_{j}\right)^{2}
+          \]
+          where \( w_{i j} \) are elements of the weight matrix \( \mathcal{W} \)
+
+    \item Prove that \( \mathcal{L} \) is positive semi-definite.
+
+    \item Prove that the smallest eigenvalue of \( \mathcal{L} \) is 0 and find the corresponding eigenvector.
+
+    \item Show that \( \mathcal{L} \) has \( n \) non-negative, real-valued eigenvalues, \( 0 \leq \lambda_{1} \leq \lambda_{2} \ldots \leq \lambda_{n} \).
+
+    \item Show that the number of connected components in a graph G is the multiplicity k of the eigenvalue 0 for the Graph Laplacian, \( \mathcal{L} \).\\
+          P.S --- Refer to the pdf on spectral clustering by Chunpai Wang, uploaded in the files section of Week-12 channel for any doubts.
+\end{enumerate}
+
 \subsection*{Solution}

@@ -1,3 +1,42 @@
 \section*{Problem 5}
 
+\textbf{Multi-dimensional scaling}\\
+Recall that in classical Multi-dimensional scaling, our objective is to project the given data points, \( x_{1}, x_{2}, \ldots, x_{n} \in \mathbb{R}^{d} \) to lower dimensional datapoints \( y_{1}, y_{2}, \ldots, y_{n} \in \mathbb{R}^{k} \) such that \( k<d \), while preserving (approximately) the \( l_{2} \)-norm distances between them Suppose that the distances can be preserved exactly, i.e, we can find \( y_{i} \) for each \( x_{i} \) such that
+\[
+    \left \| y_{i}-y_{j}\right \| _{2}=\left \| x_{i}-x_{j}\right \| _{2}=l_{i j} \text { for all i,j } \in \{ 1,2, \ldots, n \}
+\]
+To remove the translational invariance, we add a constrain
+\[
+    \sum_{i=1}^{n} y_{i}=0
+\]
+
+\begin{enumerate}[label= (\alph*), noitemsep, topsep=0pt]
+    \item Starting with the above constrain, show that
+          \[
+              y_{i}^{T} y_{j}=\frac{1}{2}\left(\frac{1}{n} l_{i .}{ }^{2}+\frac{1}{n} l_{. j}{ }^{2}-\frac{1}{n} l_{. .}{ }^{2}-l_{i j}{ }^{2}\right), \quad \forall i, j
+          \]
+          where
+          \[
+              l_{. j}^{2}=\sum_{i=1}^{n} l_{i j}^{2} \quad l_{i .}^{2}=\sum_{j=1}^{n} l_{i j}^{2} \quad \text { and } \quad l_{. .}^{2}=\sum_{i, j=1}^{n} l_{i j}^{2}
+          \]
+
+    \item Denote the above expression as \( g_{i j}=y_{i}^{T} y_{j} \).
+          Define the gram matrix, \( G= \) \( \left(g_{i j}\right) \in \mathbb{R}^{n \times n} \) and define the embedding matrix as \( Y=\left[y_{1}, y_{2}, \ldots, y_{n}\right]^{T} \).
+          Now, the equation obtained in part (a) can be re-written as
+          \[
+              Y Y^{T}=G
+          \]
+          Show that the G matrix can be expressed as
+          \[
+              G=-\frac{1}{2} J L J \text { where } L=\left(l_{i j}{ }^{2}\right), J=I_{n}-\frac{1}{n} \mathbf{1 1}^{T}
+          \]
+          Here, \( I_{n} \) is the \( n \times n \) identity matrix and \( \mathbf{1} \) is the column vector of all 1's.Also show that all the rows (and columns) of G sum to zero, and that G must have an eigenvalue of 0.
+
+    \item Show that if G is positive semidefinite and \( k \geq r=\operatorname{rank}(G) \), then the MDS problem has the exact solution
+          \[
+              Y=U_{k} \Sigma_{k}=\left[\sqrt{\lambda_{1}} \mathbf{u}_{1}, \ldots, \sqrt{\lambda_{r}} \mathbf{u}_{r}, \mathbf{0}, \ldots, \mathbf{0}\right] \in \mathbb{R}^{n \times k}
+          \]
+          where \( \left(\lambda_{i}, \mathbf{u}_{i}\right) \) are eigenpairs of the \( \mathbf{G} \) matrix.
+\end{enumerate}
+
 \subsection*{Solution}

@@ -1,3 +1,12 @@
 \section*{Problem 3}
 
+\textbf{K-means and its relation to the EM algorithm}\\
+In this problem, we will show that the K-means algorithm is a special case of EM algorithm applied to GMM.\@
+Consider a Gaussian Mixture Model with K components
+\[
+    p(x)=\sum_{k=1}^{K} \Pi_{k} \mathcal{N}\left(x \mid \mu_{k}, \Sigma_{k}\right)
+\]
+Now, suppose that each of the covariance matrices, \( \Sigma_{k}=\epsilon I \) for all \( k=1,2, \ldots, K \).
+Then, show that the limiting case, \( \epsilon \rightarrow 0 \) is equivalent to K-means clustering.
+
 \subsection*{Solution}
