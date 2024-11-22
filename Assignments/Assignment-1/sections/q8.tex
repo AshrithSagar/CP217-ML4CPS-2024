@@ -24,7 +24,7 @@ We define a sum of exponential loss for all the datapoints as our loss function 
 \]
 We can simplify the loss function by letting \( w_{i}{ }^{(1)}=1 \) and \( w_{i}{ }^{(m)}=e^{-y_{i} C_{m-1}\left(x_{i}\right)} \)
 \begin{enumerate}[label= (\alph*), noitemsep, topsep=0pt]
-    \item First, simplify the loss function by noting that \( y_{i} A_{m}\left(x_{i}\right) \in\{-1,1\} \) and split the loss into two terms, namely one for which \( y_{i} A_{m}\left(x_{i}\right)=1 \) and other in which \( y_{i} A_{m}\left(x_{i}\right)=-1 \)
+    \item First, simplify the loss function by noting that \( y_{i} A_{m}\left(x_{i}\right) \in \{-1,1\} \) and split the loss into two terms, namely one for which \( y_{i} A_{m}\left(x_{i}\right)=1 \) and other in which \( y_{i} A_{m}\left(x_{i}\right)=-1 \)
 
     \item Now, take the derivative of the loss with respect to \( \alpha_{m} \) and setting it to zero, show that:
           \[
@@ -36,5 +36,7 @@ We can simplify the loss function by letting \( w_{i}{ }^{(1)}=1 \) and \( w_{i}
 \subsection*{Solution}
 
 \subsubsection*{(a) Simplifying the loss function}
+
+We can see that \( y_{i} A_{m}\left(x_{i}\right) \in \{-1,1\} \) indeed, since both the terms \( y_{i} \) and \( A_{m}\left(x_{i}\right) \) are in \( \{-1,1\} \).
 
 \subsubsection*{(b) Derivative of the loss with respect to \( \alpha_{m} \)}
