@@ -29,12 +29,11 @@ The L2 regularisation term is given by
 \begin{equation*}
       \mathcal{L}(\theta) = f(\theta) + \frac{\lambda}{2} \| \theta \|_2^2
 \end{equation*}
-
 The gradient descent update rule with L2 regularization is given by
 \begin{equation*}
       \theta_{t+1} = \theta_t - \eta \left( \nabla f(\theta_t) + \lambda \theta_t \right)
 \end{equation*}
-This is the term that occurs in the L2 patametrised gradient descent.
+This is the term that occurs in the L2 regularized gradient descent.
 
 \subsubsection*{(c) Multidimensional case}
 
@@ -42,7 +41,6 @@ In the multidimensional case, we have that the regression loss function is minim
 \begin{equation*}
       \mathbb{E} \left[ y \mid x \right] = \int y p(y \mid x) dy
 \end{equation*}
-
 The conditional expectation is given by
 \begin{equation*}
       \mathbb{E} \left[ y \mid x \right] = \int y p(y \mid x) dy = \int y \mathcal{N} \left( y \mid \mu(x), \sigma^2 \right) dy = \mu(x)
