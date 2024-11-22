@@ -2,18 +2,26 @@
 
 \textbf{(Gradient descent, L2 regularization, and variational calculus)}
 \begin{enumerate}[label= (\alph*), noitemsep, topsep=0pt]
-    \item Show that a first-order gradient descent always leads to a decrease in the function value for smooth functions.
+      \item Show that a first-order gradient descent always leads to a decrease in the function value for smooth functions.
 
-    \item Show that L2 regularization leads to a ``decay'' term in the gradient descent.
-          What is the term?
+      \item Show that L2 regularization leads to a ``decay'' term in the gradient descent.
+            What is the term?
 
-    \item (Bishop, Exercise problem 1.25) Taking motivation for the result 1.89 in Bishop, prove the same result for multidimensional case, as given in exercise problem 1.25.\\
-          P.S If interested, you can look up exercise problem 1.27 of Bishop.
+      \item (Bishop, Exercise problem 1.25) Taking motivation for the result 1.89 in Bishop, prove the same result for multidimensional case, as given in exercise problem 1.25.\\
+            P.S If interested, you can look up exercise problem 1.27 of Bishop.
 \end{enumerate}
 
 \subsection*{Solution}
 
 \subsubsection*{(a) First-order gradient descent for smooth functions}
+
+The gradient descent update rule is given by
+\begin{equation*}
+      \theta_{t+1} = \theta_t - \eta \nabla f(\theta_t)
+\end{equation*}
+where \(\theta_t\) is the parameter at time \(t\), \( \eta > 0 \) is the learning rate, and \(f(\theta)\) is the function to be minimized.
+For smooth functions, the gradient of the function at a point gives the direction of steepest ascent, thereby the negative of the gradient gives the direction of steepest descent.
+The smoothness property of the function ensures that the gradient is continuous and differentiable, ensuring that the function value decreases at each iteration, i.e., \(f(\theta_{t+1}) < f(\theta_t)\).
 
 \subsubsection*{(b) L2 regularization and the ``decay'' term}
 
