@@ -19,4 +19,44 @@ In the weighted case, we have a similar result.
 
 \subsubsection*{(b) Inverse of the square of the magnitude of the optimal margin}
 
+The SVM algorithm tries to find the maximum-margin classifier by solving the optimization problem
+\begin{equation*}
+    \min_{w, b} \frac{1}{2} \| w \|^{2}
+    \quad \text{s.t.} \quad
+    y^{(i)} \left( w^{T} x^{(i)} + b \right) \geq 1
+    \quad
+    \forall i = 1, \ldots, m
+\end{equation*}
+The Lagrangian \( \mathcal{L} \) of the SVM optimization problem is given by
+\begin{equation*}
+    \mathcal{L} = \frac{1}{2} \| w \|^{2} - \sum_{i=1}^{m} \alpha_{i} \left[ y^{(i)} \left( w^{T} x^{(i)} + b \right) - 1 \right]
+\end{equation*}
+where \( \alpha_{i} \geq 0 \) are the Lagrange multipliers.
+By the KKT conditions, the conditions for optimality are given by
+\begin{align*}
+    \nabla_{w} \mathcal{L}
+     & =
+    w - \sum_{i=1}^{m} \alpha_{i} y^{(i)} x^{(i)} = 0
+    \implies
+    w = \sum_{i=1}^{m} \alpha_{i} y^{(i)} x^{(i)}
+    \\
+    \nabla_{b} \mathcal{L}
+     & =
+    - \sum_{i=1}^{m} \alpha_{i} y^{(i)} = 0
+    \implies
+    \sum_{i=1}^{m} \alpha_{i} y^{(i)} = 0
+\end{align*}
+\begin{align*}
+    \implies
+    \lVert w \rVert^{2}
+     & =
+    \left\lVert \sum_{i=1}^{m} \alpha_{i} y^{(i)} x^{(i)} \right\rVert^{2}
+\end{align*}
+\begin{align*}
+    \implies
+    \frac{1}{\lVert w \rVert^{2}}
+    =
+    \sum_{i=1}^{m} \alpha_{i}
+\end{align*}
+
 \subsubsection*{(c) Training accuracy and number of support vectors}
