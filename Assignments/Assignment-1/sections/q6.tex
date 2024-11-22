@@ -60,3 +60,14 @@ By the KKT conditions, the conditions for optimality are given by
 \end{align*}
 
 \subsubsection*{(c) Training accuracy and number of support vectors}
+
+The number of support vectors is given by the number of non-zero Lagrange multipliers.
+In this case, there are 400 support vectors.
+The training accuracy is defined as the proportion of correctly classified data points.
+Since there are 2,000 slack variables greater than 1, these correspond to the data points that are either misclassified or violate the margin by more than unity.
+The training accuracy then, is given by
+\begin{equation*}
+    \text{Training Accuracy} = \frac{10000 - 2000}{10000} = 0.8
+    \implies
+    80\%
+\end{equation*}
