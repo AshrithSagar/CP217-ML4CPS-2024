@@ -1,6 +1,6 @@
 \section*{Problem 6}
 
-\textbf{(Support Vector Machines-I)}\\
+\textbf{(Support Vector Machines-I)}
 \begin{enumerate}[label= (\alph*), noitemsep, topsep=0pt]
     \item Show that irrespective of the dimensionality of the data space, a data set consisting of just two data points, one form each class, is sufficient to determine the location of the maximum-margin classifier.
 
@@ -12,6 +12,10 @@
 \subsection*{Solution}
 
 \subsubsection*{(a) Location of the maximum-margin classifier with just two data points}
+
+This follows from the fact that we can use the perpendicular bisector between the two points from two different classes, and it is possible to see that the optimal matgin classifier should pass through the midpoint of the line joining the two point from each of the classes.
+This is because the margin is maximised when the decision boundary is equidistant from the two points.
+In the weighted case, we have a similar result.
 
 \subsubsection*{(b) Inverse of the square of the magnitude of the optimal margin}
 
