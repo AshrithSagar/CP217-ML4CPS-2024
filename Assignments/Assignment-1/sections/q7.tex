@@ -24,6 +24,17 @@ The \( l_{2} \) norm soft margin SVM algorithm is given by the following optimiz
 
 \subsubsection*{(b) The Lagrangian of the \( l_{2} \) norm soft margin SVM optimization problem}
 
+The Lagrangian \( \mathcal{L} \) of the \( l_{2} \) norm soft margin SVM optimization problem is given by, with \( \alpha_{i} \geq 0, \quad i = 1, \ldots, m \quad \) as the Lagrange multipliers,
+\begin{align*}
+    \mathcal{L}
+     & =
+    \frac{1}{2}\|w\|^{2}+\frac{C}{2} \sum_{i=1}^{m} \xi_{i}^{2}
+    - \sum_{i=1}^{m} \alpha_{i} \left[ y^{(i)}\left(w^{T} x^{(i)}+b\right) - (1-\xi_{i}) \right]
+    \\ & =
+    \frac{1}{2}\|w\|^{2}+\frac{C}{2} \sum_{i=1}^{m} \xi_{i}^{2}
+    - \sum_{i=1}^{m} \alpha_{i} \left[ y^{(i)}\left(w^{T} x^{(i)}+b\right) - 1 + \xi_{i} \right]
+\end{align*}
+
 \subsubsection*{(c) Minimizing the Lagrangian with respect to \( w, b \), and \( \xi \)}
 
 \subsubsection*{(d) The dual of the \( l_{2} \) norm soft margin SVM optimization problem}
