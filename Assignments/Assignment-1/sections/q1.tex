@@ -1,13 +1,13 @@
 \section*{Problem 1}
 
 \textbf{(Convexity of the BCE loss)}\\
-The Binary Cross Entropy Loss(BCE) for logistic regression is given by:
+The Binary Cross Entropy Loss (BCE) for logistic regression is given by:
 \[
     \mathcal{L}(\theta)=-\frac{1}{m} \sum_{i=1}^{m} y^{(i)} \log \left(h_{\theta}\left(x^{(i)}\right)\right)+\left(1-y^{(i)}\right) \log \left(1-h_{\theta}\left(x^{(i)}\right)\right)
 \]
-where \( y^{(i)} \in\{0,1\} \) and \( h_{\theta}(x)=\sigma\left(\theta^{T} x\right), \sigma \) is the usual logistic sigmoid.\\
+where \( y^{(i)} \in \{0,1\} \) and \( h_{\theta}(x)=\sigma\left(\theta^{T} x\right), \sigma \) is the usual logistic sigmoid.\\
 Find the Hessian \( \mathbf{H} \) of the function and show that it is positive semidefinite.\\
-P.S - Positive Semidefiniteness of the Hessian means that the loss function is convex(as mentioned in class), and hence, it will have a unique global minimum.
+P.S -- Positive Semidefiniteness of the Hessian means that the loss function is convex(as mentioned in class), and hence, it will have a unique global minimum.
 
 \subsection*{Solution}
 
@@ -28,133 +28,133 @@ The usual logistic function is given by
     \sigma\left(t\right) \cdot \left(1-\sigma\left(t\right)\right)
     \\
     \implies
-    h_{\theta}\left(x^{(i)}\right)
+    h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)
      & =
-    \sigma\left(\theta^{T} x^{(i)}\right)
+    \sigma\left(\mathbf{\theta}^{T} \mathbf{x}^{(i)}\right)
     =
-    \frac{1}{1+e^{-\theta^{T} x^{(i)}}}
+    \frac{1}{1+e^{-\mathbf{\theta}^{T} \mathbf{x}^{(i)}}}
     \\
     \implies
-    \frac{\partial}{\partial \theta} h_{\theta}\left(x^{(i)}\right)
+    \frac{\partial}{\partial \mathbf{\theta}} h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)
      & =
-    h_{\theta}\left(x^{(i)}\right) \left(1-h_{\theta}\left(x^{(i)}\right)\right) x^{(i)}
+    h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)\right) \mathbf{x}^{(i)}
 \end{align*}
-Now, the derivate of the loss function is
+Now, the derivative of the loss function is
 \begin{align*}
     \implies
-    \frac{\partial}{\partial \theta} \mathcal{L}(\theta)
+    \frac{\partial}{\partial \mathbf{\theta}} \mathcal{L}(\mathbf{\theta})
      & =
     -\frac{1}{m} \sum_{i=1}^{m}
-    y^{(i)} \frac{\partial}{\partial \theta} \log \left(h_{\theta}\left(x^{(i)}\right)\right)
+    y^{(i)} \frac{\partial}{\partial \mathbf{\theta}} \log \left(h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
     +
-    \left(1-y^{(i)}\right) \frac{\partial}{\partial \theta} \log \left(1-h_{\theta}\left(x^{(i)}\right)\right)
+    \left(1-y^{(i)}\right) \frac{\partial}{\partial \mathbf{\theta}} \log \left(1-h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
     \\ & =
     -\frac{1}{m} \sum_{i=1}^{m}
     \left(
     y^{(i)}
-    \cdot \frac{1}{\cancel{h_{\theta}\left(x^{(i)}\right)}}
-    \cdot \cancel{h_{\theta}\left(x^{(i)}\right)}
-    \cdot \left(1-h_{\theta}\left(x^{(i)}\right)\right)
-    x^{(i)}
+    \cdot \frac{1}{\cancel{h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)}}
+    \cdot \cancel{h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)}
+    \cdot \left(1-h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
+    \mathbf{x}^{(i)}
     \right.
     \\ & \qquad
     \left.
     +
     \left(1-y^{(i)}\right)
-    \cdot \frac{1}{\cancel{(1-h_{\theta}\left(x^{(i)}\right))}}
+    \cdot \frac{1}{\cancel{(1-h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right))}}
     \cdot (-1)
-    \cdot h_{\theta}\left(x^{(i)}\right)
-    \cdot \cancel{\left(1-h_{\theta}\left(x^{(i)}\right)\right)}
-    x^{(i)}
+    \cdot h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)
+    \cdot \cancel{\left(1-h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)\right)}
+    \mathbf{x}^{(i)}
     \right)
     \\ & =
     -\frac{1}{m} \sum_{i=1}^{m}
     \left(
-    y^{(i)} \left(1-h_{\theta}\left(x^{(i)}\right)\right) x^{(i)}
+    y^{(i)} \left(1-h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)\right) \mathbf{x}^{(i)}
     -
-    \left(1-y^{(i)}\right) h_{\theta}\left(x^{(i)}\right) x^{(i)}
+    \left(1-y^{(i)}\right) h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \mathbf{x}^{(i)}
     \right)
 \end{align*}
 \begin{align*}
      & =
     -\frac{1}{m} \sum_{i=1}^{m}
     \Big(
-    y^{(i)} x^{(i)}
+    y^{(i)} \mathbf{x}^{(i)}
     -
-    \cancel{y^{(i)} h_{\theta}\left(x^{(i)}\right) x^{(i)}}
+    \cancel{y^{(i)} h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \mathbf{x}^{(i)}}
     -
-    h_{\theta}\left(x^{(i)}\right) x^{(i)}
+    h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \mathbf{x}^{(i)}
     +
-    \cancel{y^{(i)} h_{\theta}\left(x^{(i)}\right) x^{(i)}}
+    \cancel{y^{(i)} h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \mathbf{x}^{(i)}}
     \Big)
     \\ & =
     -\frac{1}{m} \sum_{i=1}^{m}
     \left(
-    y^{(i)} x^{(i)}
+    y^{(i)} \mathbf{x}^{(i)}
     -
-    h_{\theta}\left(x^{(i)}\right) x^{(i)}
+    h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \mathbf{x}^{(i)}
     \right)
     \\
     \implies
-    \frac{\partial}{\partial \theta} \mathcal{L}(\theta)
+    \frac{\partial}{\partial \mathbf{\theta}} \mathcal{L}(\mathbf{\theta})
      & =
     \frac{1}{m} \sum_{i=1}^{m}
     \left(
-    h_{\theta}\left(x^{(i)}\right)
+    h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)
     -
     y^{(i)}
     \right)
-    x^{(i)}
+    \mathbf{x}^{(i)}
 \end{align*}
 
 The Hessian then is
 \begin{align*}
     \implies
-    \mathcal{H}(\theta)
+    \mathcal{H}(\mathbf{\theta})
      & =
-    \frac{\partial^2}{\partial \theta^2} \mathcal{L}(\theta)
+    \frac{\partial^2}{\partial \mathbf{\theta}^2} \mathcal{L}(\mathbf{\theta})
     =
     \frac{1}{m} \sum_{i=1}^{m}
     \left(
-    \frac{\partial}{\partial \theta} h_{\theta}\left(x^{(i)}\right) x^{(i)}
+    \frac{\partial}{\partial \mathbf{\theta}} h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \mathbf{x}^{(i)}
     -
-    \cancel{\frac{\partial}{\partial \theta} y^{(i)} x^{(i)}}
+    \cancel{\frac{\partial}{\partial \mathbf{\theta}} y^{(i)} \mathbf{x}^{(i)}}
     \right)
     \\ & =
     \frac{1}{m} \sum_{i=1}^{m}
-    \frac{\partial}{\partial \theta} h_{\theta}\left(x^{(i)}\right) x^{(i)}
+    \frac{\partial}{\partial \mathbf{\theta}} h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \mathbf{x}^{(i)}
     \\ & =
     \frac{1}{m} \sum_{i=1}^{m}
-    h_{\theta}\left(x^{(i)}\right) \left(1-h_{\theta}\left(x^{(i)}\right)\right) {x^{(i)}}^\top x^{(i)}
+    h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)\right) {\mathbf{x}^{(i)}}^\top \mathbf{x}^{(i)}
 \end{align*}
 \begin{equation*}
     \therefore
     \boxed{
-        \mathcal{H}(\theta)
+        \mathcal{H}(\mathbf{\theta})
         =
         \frac{1}{m} \sum_{i=1}^{m}
-        h_{\theta}\left(x^{(i)}\right) \left(1-h_{\theta}\left(x^{(i)}\right)\right)
-        {\lVert x^{(i)} \rVert}^2
+        h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
+        {\lVert \mathbf{x}^{(i)} \rVert}^2
     }
 \end{equation*}
-From the above expression, we can see that this sum is non-negative, since the coefficients are all non-negative, since the logistic function is bounded between 0 and 1, and that the square function is non-negative, thereby \( \mathcal{H}(\theta) \) is in a positive semidefinite quadratic form.
+From the above expression, we can see that this sum is non-negative, since the coefficients are all non-negative, since the logistic function is bounded between 0 and 1, and that the square function is non-negative, thereby \( \mathcal{H}(\mathbf{\theta}) \) is in a positive semidefinite quadratic form.
 Hence, \underline{the Hessian is positive semidefinite}, and the loss function is convex, and has a unique global minimum.
 
-That is, for any vector \( v \in \mathbb{R}^n \), the quadratic form \( v^\top \mathbf{H}(\theta) v \geq 0 \), since
+That is, for any vector \( \mathbf{v} \in \mathbb{R}^n \), the quadratic form \( \mathbf{v}^\top \mathbf{H}(\mathbf{\theta}) \mathbf{v} \geq 0 \), since
 \begin{align*}
-    v^\top \mathbf{H}(\theta) v
+    \mathbf{v}^\top \mathbf{H}(\mathbf{\theta}) \mathbf{v}
      & =
     \frac{1}{m} \sum_{i=1}^{m}
-    v^\top
+    \mathbf{v}^\top
     \left(
-    h_{\theta}\left(x^{(i)}\right) \left(1-h_{\theta}\left(x^{(i)}\right)\right)
-    {{\lVert x^{(i)} \rVert}^2}
+    h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
+    {{\lVert \mathbf{x}^{(i)} \rVert}^2}
     \right)
-    v
+    \mathbf{v}
     \\ & =
     \frac{1}{m} \sum_{i=1}^{m}
-    h_{\theta}\left(x^{(i)}\right) \left(1-h_{\theta}\left(x^{(i)}\right)\right)
-    {{\lVert x^{(i)} \rVert}^2}
-    {{\lVert v \rVert}^2}
+    h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
+    {{\lVert \mathbf{x}^{(i)} \rVert}^2}
+    {{\lVert \mathbf{v} \rVert}^2}
 \end{align*}
-and that the coefficients \( h_{\theta}\left(x^{(i)}\right) \left(1-h_{\theta}\left(x^{(i)}\right)\right) \geq 0 \), and that \( {{\lVert x^{(i)} \rVert}^2}{{\lVert v \rVert}^2} \geq 0 \), thereby the quadratic form is non-negative, and the Hessian is positive semidefinite.
+and that the coefficients \( h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\mathbf{\theta}}\left(\mathbf{x}^{(i)}\right)\right) \geq 0 \), and that \( {{\lVert \mathbf{x}^{(i)} \rVert}^2}{{\lVert \mathbf{v} \rVert}^2} \geq 0 \), thereby the quadratic form is non-negative, and the Hessian is positive semidefinite.
