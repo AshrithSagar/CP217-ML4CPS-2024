@@ -28,3 +28,33 @@ Hint: You can start with showing the above results for a single datapoint.
 Matrix manipulation results from ``Matrix Cookbook'' can be directly used.
 
 \subsection*{Solution}
+
+\subsubsection*{Given}
+
+For a single datapoint \( x_n \), the cluster responsibilities are given by
+\begin{align*}
+    \gamma\left(z_{n k}\right)
+     & =
+    \frac{\Pi_{k} \mathcal{N}\left(x_{n} \mid \mu_{k}, \Sigma_{k}\right)}{\sum_{k=1}^{K} \Pi_{k} \mathcal{N}\left(x_{n} \mid \mu_{k}, \Sigma_{k}\right)}
+\end{align*}
+We need to find the update for the M-step of the EM algorithm for the means, variances, and the new cluster responsibilities, assuming that the cluster responsibilities \( \gamma\left(z_{n k}\right) \) remain constant in each iteration of the EM algorithm.
+
+For \(\mu_k\), the objective function in the M-step is the weighted sum of the log-likelihoods for each datapoint, with the responsibility \(\gamma(z_{n k})\) serving as the weight for each datapoint, and we have
+\[
+    L(\mu_k) = \sum_{n=1}^N \gamma(z_{n k}) \log \mathcal{N}(x_n \mid \mu_k, \Sigma_k)
+\]
+The gradient of the log-likelihood with respect to \(\mu_k\) is given by
+\[
+    \frac{\partial L(\mu_k)}{\partial \mu_k}
+    =
+    \frac{\partial}{\partial \mu_k} \sum_{n=1}^N \gamma(z_{n k}) \log \mathcal{N}(x_n \mid \mu_k, \Sigma_k)
+\]
+For a single Gaussian \(\mathcal{N}(x_n \mid \mu_k, \Sigma_k)\), the derivative with respect to \(\mu_k\) is
+\[
+    \frac{\partial}{\partial \mu_k} \log \mathcal{N}(x_n \mid \mu_k, \Sigma_k) = \Sigma_k^{-1}(x_n - \mu_k)
+\]
+Thus, the update for the mean \(\mu_k\) is derived by setting the gradient equal to zero
+\[
+    \mu_k^{\text{new}} = \frac{\sum_{n=1}^N \gamma(z_{n k}) x_n}{\sum_{n=1}^N \gamma(z_{n k})} = \frac{1}{N_k} \sum_{n=1}^N \gamma(z_{n k}) x_n
+\]
+where \(N_k = \sum_{n=1}^N \gamma(z_{n k})\) is the effective number of datapoints assigned to component \(k\).
