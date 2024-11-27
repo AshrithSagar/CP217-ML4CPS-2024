@@ -16,6 +16,7 @@
 Given a dataset containing \( n \) observations of \( d \)-dimensional data \( {\{ \mathbf{x}^{(i)} \}}_{i=1}^{n}, \quad \mathbf{x}^{(i)} \in \mathbb{R}^d \), we want to project this to an \( m (< d) \) dimensional subspace such that the variance of the projected data is maximized.
 We will use mathematical induction to prove that the first \( m \) principal components correspond to the directions corresponding to the \( m \) largest eigenvectors of the covariance matrix \( \mathbf{S} \).
 
+\textbf{Induction base case}:
 For \( m = 1 \), we have as follows.
 Projecting the data onto a unit vector \( \mathbf{u}_1 \), i.e., with \( \mathbf{u}_1^\top \mathbf{u}_1 = 1 \) and \( \mathbf{u}_1 \in \mathbb{R}^d \), transforms each data point \( \mathbf{x}^{(i)} \) to \( \mathbf{u}_1^\top \mathbf{x}^{(i)} \).
 The (sample) mean and variance of the projected data is given by
@@ -60,43 +61,60 @@ which is the eigenvalue equation for the covariance matrix \( \mathbf{S} \).
 Choosing \( \mathbf{u}_1 \) to be the eigenvector corresponding to the largest eigenvalue \( \lambda_1 \) of \( \mathbf{S} \) maximizes the variance of the projected data.
 Thus, the first principal component corresponds to the direction of the eigenvector corresponding to the largest eigenvalue of the covariance matrix.
 
+\textbf{Induction hypothesis}:
 Similarly, by induction on \( m \), we can see that for projecting the data onto \( m \) unit vectors \( {\{ \mathbf{u}_j \}}_{j=1}^{m} \) such that \( \mathbf{u}_j^\top \mathbf{u}_j = 1, \quad \mathbf{u}_j \in \mathbb{R}^d, \quad j = 1, 2, \dots, m \quad \), the variance of the projected data is maximized when the \( m \) unit vectors are the eigenvectors corresponding to the \( m \) largest eigenvalues \( \lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_m \) of the covariance matrix \( \mathbf{S} \).
 
+\textbf{Induction step}:
+Assume that the first \( m \) principal components correspond to the directions of the \( m \) largest eigenvectors of the covariance matrix \( \mathbf{S} \). We need to show that the first \( m+1 \) principal components correspond to the directions of the \( m+1 \) largest eigenvectors of \( \mathbf{S} \).
+
+Consider projecting the data onto \( m+1 \) unit vectors \( {\{ \mathbf{u}_j \}}_{j=1}^{m+1} \) such that \( \mathbf{u}_j^\top \mathbf{u}_j = 1 \) and \( \mathbf{u}_i^\top \mathbf{u}_j = 0 \) for \( i \neq j \). The variance of the projected data is given by
+\begin{align*}
+    \sigma_{m+1}^2
+     & =
+    \sum_{j=1}^{m+1} \mathbf{u}_j^\top \mathbf{S} \mathbf{u}_j.
+\end{align*}
+
+To maximize \( \sigma_{m+1}^2 \), we need to choose \( \mathbf{u}_{m+1} \) such that it is orthogonal to \( \mathbf{u}_1, \mathbf{u}_2, \dots, \mathbf{u}_m \) and maximizes the variance. This is achieved by choosing \( \mathbf{u}_{m+1} \) to be the eigenvector corresponding to the \( (m+1) \)-th largest eigenvalue \( \lambda_{m+1} \) of \( \mathbf{S} \).
+
+\clearpage
 \subsubsection*{(b) Minimum reconstruction error of PCA}
 
-Given the maximum variance formulation of PCA, we can derive the minimum reconstruction error formulation.
-The mean and covariance matrix of the original dataset are given by
-\begin{align*}
-    \bar{\mathbf{x}}
-     & =
-    \frac{1}{N} \sum_{n=1}^{N} \mathbf{x}_n,
-    \\
-    \mathbf{S}
-     & =
-    \frac{1}{N} \sum_{n=1}^{N} {(\mathbf{x}_n - \bar{\mathbf{x}})}{(\mathbf{x}_n - \bar{\mathbf{x}})^\top}.
-\end{align*}
+To show that the minimum reconstruction error formulation of PCA is equivalent to the maximum variance formulation, we can use the Lagrangian approach.
 
-The projection of the dataset onto the \( M \) principal components \( {\{ \mathbf{u}_m \}}_{m=1}^{M} \) is given by
-\begin{align*}
-    \mathbf{Z}
-     & =
-    \mathbf{U}_M^\top \mathbf{X},
-\end{align*}
-where \( \mathbf{U}_M = [\mathbf{u}_1, \mathbf{u}_2, \dots, \mathbf{u}_M] \) is the matrix of the \( M \) principal components.
-The reconstruction of the dataset from the projected data is given by
-\begin{align*}
-    \mathbf{X}_{R}
-     & =
-    \mathbf{U}_M \mathbf{Z}
-    =
-    \mathbf{U}_M \mathbf{U}_M^\top \mathbf{X}.
-\end{align*}
+The reconstruction error for a data point \( \mathbf{x}^{(i)} \) is given by the squared distance between the original data point and its projection onto the subspace spanned by the principal components:
+\[
+    \left\| \mathbf{x}^{(i)} - \mathbf{U}_M \mathbf{U}_M^\top \mathbf{x}^{(i)} \right\|^2,
+\]
+where \( \mathbf{U}_M \) is the matrix of the first \( M \) principal components.
 
-The minimum reconstruction error (MRE) is given by
-\begin{align*}
-    \text{MRE}
-     & =
-    \frac{1}{N} \sum_{n=1}^{N} \left \| \mathbf{x}_n - \mathbf{x}_{R, n} \right \|^2
-    =
-    \frac{1}{N} \sum_{n=1}^{N} (\mathbf{x}_n - \mathbf{x}_{R, n} )^\top (\mathbf{x}_n - \mathbf{x}_{R, n})
-\end{align*}
+The total reconstruction error for the dataset is the sum of the reconstruction errors for all data points:
+\[
+    \text{MRE} = \sum_{i=1}^{n} \left\| \mathbf{x}^{(i)} - \mathbf{U}_M \mathbf{U}_M^\top \mathbf{x}^{(i)} \right\|^2.
+\]
+
+We want to minimize the reconstruction error subject to the constraint that the columns of \( \mathbf{U}_M \) are orthonormal, i.e., \( \mathbf{U}_M^\top \mathbf{U}_M = \mathbf{I} \). This is a constrained optimization problem, which we can solve using the Lagrangian approach.
+
+The Lagrangian for this problem is given by
+\[
+    \mathcal{L}(\mathbf{U}_M, \mathbf{\Lambda}) = \sum_{i=1}^{n} \left\| \mathbf{x}^{(i)} - \mathbf{U}_M \mathbf{U}_M^\top \mathbf{x}^{(i)} \right\|^2 + \text{tr} \left( \mathbf{\Lambda} (\mathbf{U}_M^\top \mathbf{U}_M - \mathbf{I}) \right),
+\]
+where \( \mathbf{\Lambda} \) is a matrix of Lagrange multipliers.
+
+To find the optimal \( \mathbf{U}_M \), we take the derivative of \( \mathcal{L} \) with respect to \( \mathbf{U}_M \) and set it to zero:
+\[
+    \frac{\partial \mathcal{L}}{\partial \mathbf{U}_M} = -2 \sum_{i=1}^{n} \mathbf{x}^{(i)} (\mathbf{x}^{(i)} - \mathbf{U}_M \mathbf{U}_M^\top \mathbf{x}^{(i)})^\top + 2 \mathbf{U}_M \mathbf{\Lambda} = 0.
+\]
+
+Simplifying, we get
+\[
+    \sum_{i=1}^{n} \mathbf{x}^{(i)} \mathbf{x}^{(i)\top} \mathbf{U}_M = \mathbf{U}_M \mathbf{\Lambda}.
+\]
+
+Let \( \mathbf{S} = \frac{1}{n} \sum_{i=1}^{n} \mathbf{x}^{(i)} \mathbf{x}^{(i)\top} \) be the sample covariance matrix. Then the above equation becomes
+\[
+    \mathbf{S} \mathbf{U}_M = \mathbf{U}_M \mathbf{\Lambda}.
+\]
+
+This is the eigenvalue equation for the covariance matrix \( \mathbf{S} \). The columns of \( \mathbf{U}_M \) are the eigenvectors of \( \mathbf{S} \), and the diagonal elements of \( \mathbf{\Lambda} \) are the corresponding eigenvalues.
+
+To minimize the reconstruction error, we choose \( \mathbf{U}_M \) to be the eigenvectors corresponding to the largest \( M \) eigenvalues of \( \mathbf{S} \). This shows that the minimum reconstruction error formulation of PCA is equivalent to the maximum variance formulation.
