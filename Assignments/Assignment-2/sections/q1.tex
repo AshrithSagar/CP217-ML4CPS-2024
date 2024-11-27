@@ -60,3 +60,42 @@ Choosing \( \mathbf{u}_1 \) to be the eigenvector corresponding to the largest e
 Thus, the first principal component corresponds to the direction of the eigenvector corresponding to the largest eigenvalue of the covariance matrix.
 
 Similarly, by induction on \( M \), we can see that for projecting the data onto \( M \) unit vectors \( {\{ \mathbf{u}_m \}}_{m=1}^{M} \) such that \( \mathbf{u}_m^\top \mathbf{u}_m = 1, \quad \mathbf{u}_m \in \mathbb{R}^D, \quad m = 1, 2, \dots, M \quad \), the variance of the projected data is maximized when the \( M \) unit vectors are the eigenvectors corresponding to the \( M \) largest eigenvalues \( \lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_M \) of the covariance matrix \( \mathbf{S} \).
+
+\subsubsection*{(b) Minimum reconstruction error of PCA}
+
+Given the maximum variance formulation of PCA, we can derive the minimum reconstruction error formulation.
+The mean and covariance matrix of the original dataset are given by
+\begin{align*}
+    \bar{\mathbf{x}}
+     & =
+    \frac{1}{N} \sum_{n=1}^{N} \mathbf{x}_n,
+    \\
+    \mathbf{S}
+     & =
+    \frac{1}{N} \sum_{n=1}^{N} {(\mathbf{x}_n - \bar{\mathbf{x}})}{(\mathbf{x}_n - \bar{\mathbf{x}})^\top}.
+\end{align*}
+
+The projection of the dataset onto the \( M \) principal components \( {\{ \mathbf{u}_m \}}_{m=1}^{M} \) is given by
+\begin{align*}
+    \mathbf{Z}
+     & =
+    \mathbf{U}_M^\top \mathbf{X},
+\end{align*}
+where \( \mathbf{U}_M = [\mathbf{u}_1, \mathbf{u}_2, \dots, \mathbf{u}_M] \) is the matrix of the \( M \) principal components.
+The reconstruction of the dataset from the projected data is given by
+\begin{align*}
+    \mathbf{X}_{R}
+     & =
+    \mathbf{U}_M \mathbf{Z}
+    =
+    \mathbf{U}_M \mathbf{U}_M^\top \mathbf{X}.
+\end{align*}
+
+The minimum reconstruction error (MRE) is given by
+\begin{align*}
+    \text{MRE}
+     & =
+    \frac{1}{N} \sum_{n=1}^{N} \left \| \mathbf{x}_n - \mathbf{x}_{R, n} \right \|^2
+    =
+    \frac{1}{N} \sum_{n=1}^{N} (\mathbf{x}_n - \mathbf{x}_{R, n} )^\top (\mathbf{x}_n - \mathbf{x}_{R, n})
+\end{align*}
