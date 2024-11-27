@@ -58,3 +58,21 @@ Thus, the update for the mean \(\mu_k\) is derived by setting the gradient equal
     \mu_k^{\text{new}} = \frac{\sum_{n=1}^N \gamma(z_{n k}) x_n}{\sum_{n=1}^N \gamma(z_{n k})} = \frac{1}{N_k} \sum_{n=1}^N \gamma(z_{n k}) x_n
 \]
 where \(N_k = \sum_{n=1}^N \gamma(z_{n k})\) is the effective number of datapoints assigned to component \(k\).
+
+For \(\Sigma_k\), the log-likelihood contribution from each component for a single Gaussian is
+\[
+    \log \mathcal{N}(x_n \mid \mu_k, \Sigma_k) = -\frac{1}{2} \log \det(2 \pi \Sigma_k) - \frac{1}{2} (x_n - \mu_k)^T \Sigma_k^{-1} (x_n - \mu_k)
+\]
+Similarly as above, the derivative with respect to \(\Sigma_k\) is
+\[
+    \frac{\partial}{\partial \Sigma_k} \log \mathcal{N}(x_n \mid \mu_k, \Sigma_k) = -\frac{1}{2} \Sigma_k^{-1} + \frac{1}{2} \Sigma_k^{-1} (x_n - \mu_k) (x_n - \mu_k)^T \Sigma_k^{-1}
+\]
+Setting the gradient equal to zero, we get
+\[
+    \Sigma_k^{\text{new}} = \frac{1}{N_k} \sum_{n=1}^N \gamma(z_{n k}) (x_n - \mu_k^{\text{new}}) (x_n - \mu_k^{\text{new}})^T
+\]
+For \(\Pi_k\), the update is given by
+\[
+    \Pi_k^{\text{new}} = \frac{N_k}{N}
+\]
+where \(N = \sum_{n=1}^N \gamma(z_{n k})\).
