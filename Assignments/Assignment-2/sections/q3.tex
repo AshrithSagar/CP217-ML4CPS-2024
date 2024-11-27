@@ -10,3 +10,24 @@ Now, suppose that each of the covariance matrices, \( \Sigma_{k}=\epsilon I \) f
 Then, show that the limiting case, \( \epsilon \rightarrow 0 \) is equivalent to K-means clustering.
 
 \subsection*{Solution}
+
+Given a Gaussian Mixture Model with K components
+\begin{equation*}
+    p(x)=\sum_{k=1}^{K} \Pi_{k} \mathcal{N}\left(x \mid \mu_{k}, \Sigma_{k}\right)
+\end{equation*}
+and each of the covariance matrices, \( \Sigma_{k}=\epsilon I \) for all \( k=1,2, \ldots, K \), we have
+\begin{align*}
+    p(x)
+     & =
+    \sum_{k=1}^{K} \Pi_{k} \mathcal{N}\left(x \mid \mu_{k}, \epsilon I\right)
+    \\ & =
+    \sum_{k=1}^{K} \Pi_{k} \frac{1}{(2\pi)^{D/2} |\epsilon I|^{1/2}} \exp\left( -\frac{1}{2} (x - \mu_k)^\top (\epsilon I)^{-1} (x - \mu_k) \right)
+    \\ & =
+    \frac{1}{(2\pi \epsilon)^{D/2}} \sum_{k=1}^{K} \Pi_{k} \exp\left( -\frac{1}{2\epsilon} \|x - \mu_k\|^2 \right)
+\end{align*}
+
+As \( \epsilon \to 0 \), the Gaussian components become increasingly concentrated around their means \( \mu_k \).
+For small \( \epsilon \), the term \( -\frac{1}{2\epsilon} \|x - \mu_k\|^2 \) causes the Gaussian to approach a Dirac delta function centered at \( \mu_k \).
+In this limiting case, the responsibility \( \gamma\left(z_{n k}\right) \) is essentially 1 for the component whose mean \( \mu_k \) is closest to \( x_i \), and 0 for all other components.
+Hence, each point \( x_i \) is assigned to the cluster whose mean \( \mu_k \) is closest to it, which is the standard K-means clustering rule.
+Thus, in the limit as \( \epsilon \to 0 \), the EM algorithm with GMM reduces to the K-means algorithm.
