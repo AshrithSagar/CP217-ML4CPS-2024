@@ -10,3 +10,53 @@
 \end{enumerate}
 
 \subsection*{Solution}
+
+\subsubsection*{(a) Maximum variance formulation of PCA}
+
+Given a dataset containing \( N \) observations of \( D \)-dimensional data \( {\{ \mathbf{x}_n \}}_{n=1}^{N} \), we want to project this to an \( M (< D) \) dimensional subspace such that the variance of the projected data is maximized.
+We will use mathematical induction to prove that the first \( M \) principal components correspond to the directions corresponding to the \( M \) largest eigenvectors of the covariance matrix \( \mathbf{S} \).
+
+For \( M = 1 \), we have as follows.
+Projecting the data onto a unit vector \( \mathbf{u}_1 \), i.e., with \( \mathbf{u}_1^\top \mathbf{u}_1 = 1 \) and \( \mathbf{u}_1 \in \mathbb{R}^D \), transforms each data point \( \mathbf{x}_n \) to \( \mathbf{u}_1^\top \mathbf{x}_n \).
+The (sample) mean and variance of the projected data is given by
+\begin{align*}
+    \mu_1
+     & =
+    \frac{1}{N} \sum_{n=1}^{N} \mathbf{u}_1^\top \mathbf{x}_n
+    =
+    \mathbf{u}_1^\top \left( \frac{1}{N} \sum_{n=1}^{N} \mathbf{x}_n \right)
+    =
+    \mathbf{u}_1^\top \bar{\mathbf{x}},
+    \\
+    \sigma_1^2
+     & =
+    \frac{1}{N} \sum_{n=1}^{N} {( \mathbf{u}_1^T \mathbf{x}_n - \mathbf{u}_1^T \bar{\mathbf{x}} )}^2
+    =
+    \mathbf{u}_1^\top \left( \frac{1}{N} \sum_{n=1}^{N} {(\mathbf{x}_n - \bar{\mathbf{x}})}{(\mathbf{x}_n - \bar{\mathbf{x}})^\top} \right) \mathbf{u}_1
+    =
+    \mathbf{u}_1^\top \mathbf{S} \mathbf{u}_1,
+\end{align*}
+
+We want to maximize the variance \( \sigma_1^2 \) subject to the constraint \( \mathbf{u}_1^\top \mathbf{u}_1 = 1 \), which is a constrained optimization problem.
+Formulating the Lagrangian to convert it to an unconstrained optimization problem, we have, with \( \lambda_1 \) as the Lagrange multiplier,
+\begin{equation*}
+    \mathcal{L}(\mathbf{u}_1, \lambda)
+    =
+    \mathbf{u}_1^\top \mathbf{S} \mathbf{u}_1 + \lambda_1 (1 - \mathbf{u}_1^\top \mathbf{u}_1)
+\end{equation*}
+and the optimization problem is \( \max_{\mathbf{u}_1, \lambda_1} \mathcal{L}(\mathbf{u}_1, \lambda_1) \).
+Differentiating \( \mathcal{L} \) with respect to \( \mathbf{u}_1 \) and setting it to zero, we get
+\begin{align*}
+    \frac{\partial \mathcal{L}}{\partial \mathbf{u}_1}
+     & =
+    2 \mathbf{S} \mathbf{u}_1 - 2 \lambda_1 \mathbf{u}_1
+    =
+    0
+    \implies
+    \mathbf{S} \mathbf{u}_1 = \lambda_1 \mathbf{u}_1
+\end{align*}
+which is the eigenvalue equation for the covariance matrix \( \mathbf{S} \).
+Choosing \( \mathbf{u}_1 \) to be the eigenvector corresponding to the largest eigenvalue \( \lambda_1 \) of \( \mathbf{S} \) maximizes the variance of the projected data.
+Thus, the first principal component corresponds to the direction of the eigenvector corresponding to the largest eigenvalue of the covariance matrix.
+
+Similarly, by induction on \( M \), we can see that for projecting the data onto \( M \) unit vectors \( {\{ \mathbf{u}_m \}}_{m=1}^{M} \) such that \( \mathbf{u}_m^\top \mathbf{u}_m = 1, \quad \mathbf{u}_m \in \mathbb{R}^D, \quad m = 1, 2, \dots, M \quad \), the variance of the projected data is maximized when the \( M \) unit vectors are the eigenvectors corresponding to the \( M \) largest eigenvalues \( \lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_M \) of the covariance matrix \( \mathbf{S} \).
