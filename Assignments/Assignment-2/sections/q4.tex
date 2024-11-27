@@ -21,3 +21,22 @@ In this question, we will explore the properties of the Graph Laplacian, \( \mat
 \end{enumerate}
 
 \subsection*{Solution}
+
+\subsubsection*{(a) Graph Laplacian \( \mathcal{L} \)}
+
+The graph Laplacian matrix \( \mathcal{L} \) is defined as \( \mathcal{L} = \mathcal{D} - \mathcal{W} \), where \( \mathcal{D} \) is the degree matrix and \( \mathcal{W} \) is the weight matrix.
+Given a vector \( f \in \mathbb{R}^{n} \), we have
+\begin{align*}
+    f^{T} L f
+     & =
+    f^{T} (\mathcal{D} - \mathcal{W}) f
+    = f^{T} \mathcal{D} f - f^{T} \mathcal{W} f
+    =
+    \sum_{i=1}^{n} d_{i} f_{i}^{2} - \sum_{i, j=1}^{n} w_{i j} f_{i} f_{j}
+    \\ & =
+    \frac{1}{2} \left( \sum_{i=1}^{n} d_{i} f_{i}^{2} - 2 \sum_{i, j=1}^{n} w_{i j} f_{i} f_{j} + \sum_{j=1}^{n} d_{j} f_{j}^{2} \right)
+    =
+    \frac{1}{2} \sum_{i, j=1}^{n} w_{i j} (f_{i} - f_{j})^{2}
+\end{align*}
+
+Hence, we have the result.
