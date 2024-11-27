@@ -79,22 +79,23 @@ With respect to \( w \), \( b \), and \( \xi \), the partial derivatives of the 
     \implies \alpha = C \xi
 \end{align*}
 where \( \alpha = {\left[ \alpha_{1}, \ldots, \alpha_{m} \right]}^\top \) and \( \xi = {\left[ \xi_{1}, \ldots, \xi_{m} \right]}^\top \).
-
-Hence, the conditions to minimise the Lagrangian with respect to \( w, b, \) and \( \xi \) are
-\begin{align*}
-     &
-    w
-    =
-    \sum_{i=1}^{m} \alpha_{i} y^{(i)} x^{(i)}
-    \\ &
-    \sum_{i=1}^{m} \alpha_{i} y^{(i)}
-    =
-    0
-    \\ &
-    \xi
-    =
-    \frac{1}{C} \alpha
-\end{align*}
+\begin{equation*}
+    \boxed{
+        w
+        =
+        \sum_{i=1}^{m} \alpha_{i} y^{(i)} x^{(i)}
+        ,\qquad
+        \sum_{i=1}^{m} \alpha_{i} y^{(i)}
+        =
+        0
+        ,\qquad
+        \xi_{i}
+        =
+        \frac{\alpha_{i}}{C}
+        ,\quad
+        i = 1, \ldots, m
+    }
+\end{equation*}
 
 \subsubsection*{(d) The dual of the \( l_{2} \) norm soft margin SVM optimization problem}
 
