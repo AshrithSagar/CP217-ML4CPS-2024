@@ -180,7 +180,6 @@ The gradient of the loss function \( \nabla_{\boldsymbol{\theta}} \mathcal{L}(\b
     \mathbf{X}^\top \mathbf{W} (\mathbf{X} \boldsymbol{\theta} - \mathbf{y})
 \end{align*}
 where \( \mathbf{W} \) is the diagonal matrix with the weights \( w^{(i)} \) on the diagonal.
-
 The generalized normal equation then can be obtained by setting the gradient to zero, and we have
 \begin{align*}
      &
@@ -196,7 +195,8 @@ The generalized normal equation then can be obtained by setting the gradient to 
         \mathbf{X}^\top \mathbf{W} \mathbf{y}
     }
 \end{align*}
-Solving this equation for \( \boldsymbol{\theta} \) gives the maximum likelihood estimate of \( \boldsymbol{\theta} \) in a weighted linear regression problem.
+Solving this equation for \( \boldsymbol{\theta} \) gives the value that minimizes \( \mathcal{L}(\boldsymbol{\theta}) \).
+It also gives the maximum likelihood estimate of \( \boldsymbol{\theta} \) in a weighted linear regression problem, as seen below.
 
 \subsubsection*{(c) Maximum likelihood estimate of \( \boldsymbol{\theta} \)}
 
