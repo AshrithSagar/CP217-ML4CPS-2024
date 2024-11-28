@@ -234,11 +234,11 @@ The likelihood function then, given that the samples are independent, can be exp
     \implies
     \frac{\partial}{\partial \boldsymbol{\theta}} \log \mathcal{L}(\boldsymbol{\theta})
      & =
-    \frac{1}{2}
+    - \frac{1}{2}
     \sum_{i=1}^{m}
     \frac{2}{\left(\sigma^{(i)}\right)^{2}}
     \left(y^{(i)}-\boldsymbol{\theta}^{\top} \mathbf{x}^{(i)}\right)
-    \mathbf{x}^{(i)}
+    \left( -\mathbf{x}^{(i)} \right)
     =
     \sum_{i=1}^{m}
     \frac{1}{\left(\sigma^{(i)}\right)^{2}}
