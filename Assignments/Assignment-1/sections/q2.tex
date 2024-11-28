@@ -26,29 +26,29 @@ here \( w^{(i)} \) is the weight given to \( i^{\text {th }} \) training example
 
 \subsection*{Solution}
 
-\subsubsection*{(a) Loss \( \mathcal{L}(\theta) \)}
+\subsubsection*{(a) Loss \( \mathcal{L}(\boldsymbol{\theta}) \)}
 
 Given the loss function
 \begin{equation*}
-    \mathcal{L}(\theta)
+    \mathcal{L}(\boldsymbol{\theta})
     =
     \frac{1}{2}
     \sum_{i=1}^{m}
-    w^{(i)}{\left(\theta^{T} x^{(i)}-y^{(i)}\right)}^{2}
+    w^{(i)}{\left(\boldsymbol{\theta}^{\top} \mathbf{x}^{(i)}-y^{(i)}\right)}^{2}
 \end{equation*}
-we have the data matrix \( X_{m \times n} \), the label vector \( y_{m \times 1} \) and the parameter vector \( \theta_{n \times 1} \) as
+we have the data matrix \( \mathbf{X}_{m \times n} \), the label vector \( \mathbf{y}_{m \times 1} \) and the parameter vector \( \boldsymbol{\theta}_{n \times 1} \) as
 \begin{equation*}
-    X
+    \mathbf{X}
     =
     \begin{bmatrix}
-        {\left(x^{(1)}\right)}^\top \\
-        {\left(x^{(2)}\right)}^\top \\
-        \vdots                      \\
-        {\left(x^{(m)}\right)}^\top
+        {\left(\mathbf{x}^{(1)}\right)}^\top \\
+        {\left(\mathbf{x}^{(2)}\right)}^\top \\
+        \vdots                               \\
+        {\left(\mathbf{x}^{(m)}\right)}^\top
     \end{bmatrix}
-    , x^{(i)} \in \mathbb{R}^{n}
+    , \mathbf{x}^{(i)} \in \mathbb{R}^{n}
     , \qquad
-    y
+    \mathbf{y}
     =
     \begin{bmatrix}
         y^{(1)} \\
@@ -58,7 +58,7 @@ we have the data matrix \( X_{m \times n} \), the label vector \( y_{m \times 1}
     \end{bmatrix}
     , y^{(i)} \in \mathbb{R}
     , \qquad
-    \theta
+    \boldsymbol{\theta}
     =
     \begin{bmatrix}
         \theta_{1} \\
@@ -68,27 +68,26 @@ we have the data matrix \( X_{m \times n} \), the label vector \( y_{m \times 1}
     \end{bmatrix}
     , \theta_{j} \in \mathbb{R}
 \end{equation*}
-
 We can then see that
 \begin{equation*}
-    (X \theta - y)
+    (\mathbf{X} \boldsymbol{\theta} - \mathbf{y})
     =
     \begin{bmatrix}
-        {\left(x^{(1)}\right)}^\top \theta
+        {\left(\mathbf{x}^{(1)}\right)}^\top \boldsymbol{\theta}
         - y^{(1)}
         \\
-        {\left(x^{(2)}\right)}^\top \theta
+        {\left(\mathbf{x}^{(2)}\right)}^\top \boldsymbol{\theta}
         - y^{(2)}
         \\
         \vdots
         \\
-        {\left(x^{(m)}\right)}^\top \theta
+        {\left(\mathbf{x}^{(m)}\right)}^\top \boldsymbol{\theta}
         - y^{(m)}
     \end{bmatrix}
 \end{equation*}
-and with
+and with a weight matrix \( \mathbf{W}_{m \times m} \) defined as
 \begin{equation*}
-    W_{m \times m}
+    \mathbf{W}_{m \times m}
     =
     \begin{bmatrix}
         w^{(1)} & 0       & \cdots & 0       \\
@@ -100,13 +99,13 @@ and with
 \begin{align*}
     \implies
      &
-    {(X \theta - y)}^\top W (X \theta - y)
+    {(\mathbf{X} \boldsymbol{\theta} - \mathbf{y})}^\top \mathbf{W} (\mathbf{X} \boldsymbol{\theta} - \mathbf{y})
     \\ & =
     \begin{bmatrix}
-        {\left(x^{(1)}\right)}^\top \theta - y^{(1)} \\
-        {\left(x^{(2)}\right)}^\top \theta - y^{(2)} \\
-        \vdots                                       \\
-        {\left(x^{(m)}\right)}^\top \theta - y^{(m)}
+        {\left(\mathbf{x}^{(1)}\right)}^\top \boldsymbol{\theta} - y^{(1)} \\
+        {\left(\mathbf{x}^{(2)}\right)}^\top \boldsymbol{\theta} - y^{(2)} \\
+        \vdots                                                             \\
+        {\left(\mathbf{x}^{(m)}\right)}^\top \boldsymbol{\theta} - y^{(m)}
     \end{bmatrix}^\top
     \begin{bmatrix}
         w^{(1)} & 0       & \cdots & 0       \\
@@ -115,127 +114,129 @@ and with
         0       & 0       & \cdots & w^{(m)}
     \end{bmatrix}
     \begin{bmatrix}
-        {\left(x^{(1)}\right)}^\top \theta - y^{(1)} \\
-        {\left(x^{(2)}\right)}^\top \theta - y^{(2)} \\
-        \vdots                                       \\
-        {\left(x^{(m)}\right)}^\top \theta - y^{(m)}
+        {\left(\mathbf{x}^{(1)}\right)}^\top \boldsymbol{\theta} - y^{(1)} \\
+        {\left(\mathbf{x}^{(2)}\right)}^\top \boldsymbol{\theta} - y^{(2)} \\
+        \vdots                                                             \\
+        {\left(\mathbf{x}^{(m)}\right)}^\top \boldsymbol{\theta} - y^{(m)}
     \end{bmatrix}
     \\ & =
     \begin{bmatrix}
-        {\left(x^{(1)}\right)}^\top \theta - y^{(1)} \\
-        {\left(x^{(2)}\right)}^\top \theta - y^{(2)} \\
-        \vdots                                       \\
-        {\left(x^{(m)}\right)}^\top \theta - y^{(m)}
+        {\left(\mathbf{x}^{(1)}\right)}^\top \boldsymbol{\theta} - y^{(1)} \\
+        {\left(\mathbf{x}^{(2)}\right)}^\top \boldsymbol{\theta} - y^{(2)} \\
+        \vdots                                                             \\
+        {\left(\mathbf{x}^{(m)}\right)}^\top \boldsymbol{\theta} - y^{(m)}
     \end{bmatrix}^\top
     \begin{bmatrix}
-        w^{(1)}{\left({\left(x^{(1)}\right)}^\top \theta - y^{(1)}\right)} \\
-        w^{(2)}{\left({\left(x^{(2)}\right)}^\top \theta - y^{(2)}\right)} \\
-        \vdots                                                             \\
-        w^{(m)}{\left({\left(x^{(m)}\right)}^\top \theta - y^{(m)}\right)}
+        w^{(1)}{\left({\left(\mathbf{x}^{(1)}\right)}^\top \boldsymbol{\theta} - y^{(1)}\right)} \\
+        w^{(2)}{\left({\left(\mathbf{x}^{(2)}\right)}^\top \boldsymbol{\theta} - y^{(2)}\right)} \\
+        \vdots                                                                                   \\
+        w^{(m)}{\left({\left(\mathbf{x}^{(m)}\right)}^\top \boldsymbol{\theta} - y^{(m)}\right)}
     \end{bmatrix}
     \\ & =
-    w^{(1)} {\left({\left(x^{(1)}\right)}^\top \theta - y^{(1)}\right)}^\top \left({\left(x^{(1)}\right)}^\top \theta - y^{(1)}\right)
-    +
-    w^{(2)} {\left({\left(x^{(2)}\right)}^\top \theta - y^{(2)}\right)}^\top \left({\left(x^{(2)}\right)}^\top \theta - y^{(2)}\right)
+    \Bigg [
+        w^{(1)} {\left({\left(\mathbf{x}^{(1)}\right)}^\top \boldsymbol{\theta} - y^{(1)}\right)}^\top \left({\left(\mathbf{x}^{(1)}\right)}^\top \boldsymbol{\theta} - y^{(1)}\right)
     \\ & \qquad +
-    \cdots
-    +
-    w^{(m)} {\left({\left(x^{(m)}\right)}^\top \theta - y^{(m)}\right)}^\top \left({\left(x^{(m)}\right)}^\top \theta - y^{(m)} \right)
+        w^{(2)} {\left({\left(\mathbf{x}^{(2)}\right)}^\top \boldsymbol{\theta} - y^{(2)}\right)}^\top \left({\left(\mathbf{x}^{(2)}\right)}^\top \boldsymbol{\theta} - y^{(2)}\right)
+        + \cdots
+    \\ & \qquad +
+        w^{(m)} {\left({\left(\mathbf{x}^{(m)}\right)}^\top \boldsymbol{\theta} - y^{(m)}\right)}^\top \left({\left(\mathbf{x}^{(m)}\right)}^\top \boldsymbol{\theta} - y^{(m)} \right)
+        \Bigg ]
     \\ & =
     \sum_{i=1}^{m}
-    w^{(i)} {\left({\left(x^{(i)}\right)}^\top \theta - y^{(i)}\right)}^\top \left({\left(x^{(i)}\right)}^\top \theta - y^{(i)} \right)
+    w^{(i)} {\left({\left(\mathbf{x}^{(i)}\right)}^\top \boldsymbol{\theta} - y^{(i)}\right)}^\top \left({\left(\mathbf{x}^{(i)}\right)}^\top \boldsymbol{\theta} - y^{(i)} \right)
     =
     \sum_{i=1}^{m}
-    w^{(i)} {\left(\theta^\top x^{(i)}-y^{(i)}\right)}^{2}
+    w^{(i)} {\left(\boldsymbol{\theta}^\top \mathbf{x}^{(i)}-y^{(i)}\right)}^{2}
     =
-    \mathcal{L}(\theta)
+    \mathcal{L}(\boldsymbol{\theta})
 \end{align*}
-since \( \left({\left(x^{(i)}\right)}^\top \theta - y^{(i)} \right) \) is a scalar, and hence \( {\left(x^{(i)}\right)}^\top \theta = \theta^\top x^{(i)} \).
+since \( \left({\left(\mathbf{x}^{(i)}\right)}^\top \boldsymbol{\theta} - y^{(i)} \right) \) is a scalar, and hence \( {\left(\mathbf{x}^{(i)}\right)}^\top \boldsymbol{\theta} = \boldsymbol{\theta}^\top \mathbf{x}^{(i)} \).
 
-Hence, we have the result, that \( \boxed{\mathcal{L}(\theta) = {(X \theta - y)}^\top W (X \theta - y)} \).
+Hence, we have the result, that \( \boxed{\mathcal{L}(\boldsymbol{\theta}) = {(\mathbf{X} \boldsymbol{\theta} - \mathbf{y})}^\top \mathbf{W} (\mathbf{X} \boldsymbol{\theta} - \mathbf{y})} \).
 
+\clearpage
 \subsubsection*{(b) Generalized normal equation}
 
-The gradient of the loss function \( \nabla_{\theta} \mathcal{L}(\theta) \) is
+The gradient of the loss function \( \nabla_{\boldsymbol{\theta}} \mathcal{L}(\boldsymbol{\theta}) \) is
 \begin{align*}
-    \nabla_{\theta} \mathcal{L}(\theta)
+    \nabla_{\boldsymbol{\theta}} \mathcal{L}(\boldsymbol{\theta})
     =
-    \frac{\partial}{\partial \theta}
+    \frac{\partial}{\partial \boldsymbol{\theta}}
     \left(
     \frac{1}{2}
     \sum_{i=1}^{m}
-    w^{(i)} {\left(\theta^\top x^{(i)}-y^{(i)}\right)}^{2}
+    w^{(i)} {\left(\boldsymbol{\theta}^\top \mathbf{x}^{(i)}-y^{(i)}\right)}^{2}
     \right)
     =
     \sum_{i=1}^{m}
-    w^{(i)} x^{(i)} \left(\theta^\top x^{(i)}-y^{(i)}\right)
+    w^{(i)} \mathbf{x}^{(i)} \left(\boldsymbol{\theta}^\top \mathbf{x}^{(i)}-y^{(i)}\right)
     =
-    X^\top W (X \theta - y)
+    \mathbf{X}^\top \mathbf{W} (\mathbf{X} \boldsymbol{\theta} - \mathbf{y})
 \end{align*}
-where \( W \) is the diagonal matrix with the weights \( w^{(i)} \) on the diagonal.
+where \( \mathbf{W} \) is the diagonal matrix with the weights \( w^{(i)} \) on the diagonal.
 
 The generalized normal equation then can be obtained by setting the gradient to zero, and we have
 \begin{align*}
      &
-    X^\top W X \theta - X^\top W y
+    \mathbf{X}^\top \mathbf{W} \mathbf{X} \boldsymbol{\theta} - \mathbf{X}^\top \mathbf{W} \mathbf{y}
     =
     0
     \\
     \implies
      &
     \boxed{
-        X^\top W X \theta
+        \mathbf{X}^\top \mathbf{W} \mathbf{X} \boldsymbol{\theta}
         =
-        X^\top W y
+        \mathbf{X}^\top \mathbf{W} \mathbf{y}
     }
 \end{align*}
-Solving this equation for \( \theta \) gives the maximum likelihood estimate of \( \theta \) in a weighted linear regression problem.
+Solving this equation for \( \boldsymbol{\theta} \) gives the maximum likelihood estimate of \( \boldsymbol{\theta} \) in a weighted linear regression problem.
 
-\subsubsection*{(c) Maximum likelihood estimate of \( \theta \)}
+\subsubsection*{(c) Maximum likelihood estimate of \( \boldsymbol{\theta} \)}
 
 Given the model
 \begin{equation*}
-    p\left(y^{(i)} \mid x^{(i)} ; \theta\right)=\frac{1}{\sqrt{2 \pi} \sigma^{(i)}} \exp \left(-\frac{{\left(y^{(i)}-\theta^{T} x^{(i)}\right)}^{2}}{2{\left(\sigma^{(i)}\right)}^{2}}\right)
+    p\left(y^{(i)} \mid \mathbf{x}^{(i)} ; \boldsymbol{\theta}\right)=\frac{1}{\sqrt{2 \pi} \sigma^{(i)}} \exp \left(-\frac{{\left(y^{(i)}-\boldsymbol{\theta}^{\top} \mathbf{x}^{(i)}\right)}^{2}}{2{\left(\sigma^{(i)}\right)}^{2}}\right)
 \end{equation*}
 where \( \sigma^{(i)} \) is the variance for the \( i \)th sample.
 
 The likelihood function then, given that the samples are independent, can be expressed as the product of the likelihoods of individual samples, and we have
 \begin{align*}
-    \mathcal{L}(\theta)
+    \mathcal{L}(\boldsymbol{\theta})
      & =
     \prod_{i=1}^{m}
-    p\left(y^{(i)} \mid x^{(i)} ; \theta\right)
+    p\left(y^{(i)} \mid \mathbf{x}^{(i)} ; \boldsymbol{\theta}\right)
     \\ & =
     \prod_{i=1}^{m}
-    \frac{1}{\sqrt{2 \pi} \sigma^{(i)}} \exp \left(-\frac{{\left(y^{(i)}-\theta^{T} x^{(i)}\right)}^{2}}{2{\left(\sigma^{(i)}\right)}^{2}}\right)
+    \frac{1}{\sqrt{2 \pi} \sigma^{(i)}} \exp \left(-\frac{{\left(y^{(i)}-\boldsymbol{\theta}^{\top} \mathbf{x}^{(i)}\right)}^{2}}{2{\left(\sigma^{(i)}\right)}^{2}}\right)
     \\ & =
     \frac{1}{\left(2 \pi\right)^{m/2} \prod_{i=1}^{m} \sigma^{(i)}}
     \exp \left(
     -\frac{1}{2}
     \sum_{i=1}^{m}
-    \frac{{\left(y^{(i)}-\theta^{T} x^{(i)}\right)}^{2}}{{\left(\sigma^{(i)}\right)}^{2}}
+    \frac{{\left(y^{(i)}-\boldsymbol{\theta}^{\top} \mathbf{x}^{(i)}\right)}^{2}}{{\left(\sigma^{(i)}\right)}^{2}}
     \right)
     \\
     \implies
-    \log \mathcal{L}(\theta)
+    \log \mathcal{L}(\boldsymbol{\theta})
      & =
     -\frac{m}{2} \log(2 \pi) - \sum_{i=1}^{m} \log \left( \sigma^{(i)} \right)
     -\frac{1}{2}
     \sum_{i=1}^{m}
-    \frac{{\left(y^{(i)}-\theta^{T} x^{(i)}\right)}^{2}}{{\left(\sigma^{(i)}\right)}^{2}}
+    \frac{{\left(y^{(i)}-\boldsymbol{\theta}^{\top} \mathbf{x}^{(i)}\right)}^{2}}{{\left(\sigma^{(i)}\right)}^{2}}
     \\
     \implies
-    \frac{\partial}{\partial \theta} \log \mathcal{L}(\theta)
+    \frac{\partial}{\partial \boldsymbol{\theta}} \log \mathcal{L}(\boldsymbol{\theta})
      & =
     \frac{1}{2}
     \sum_{i=1}^{m}
     \frac{2}{\left(\sigma^{(i)}\right)^{2}}
-    \left(y^{(i)}-\theta^{T} x^{(i)}\right)
-    x^{(i)}
+    \left(y^{(i)}-\boldsymbol{\theta}^{\top} \mathbf{x}^{(i)}\right)
+    \mathbf{x}^{(i)}
     =
     \sum_{i=1}^{m}
     \frac{1}{\left(\sigma^{(i)}\right)^{2}}
-    \left(y^{(i)}-\theta^{T} x^{(i)}\right)
-    x^{(i)}
+    \left(y^{(i)}-\boldsymbol{\theta}^{\top} \mathbf{x}^{(i)}\right)
+    \mathbf{x}^{(i)}
 \end{align*}
 which is the same as the gradient of the loss function in part (b) with \( w^{(i)} = \cfrac{1}{\left(\sigma^{(i)}\right)^{2}} \).
