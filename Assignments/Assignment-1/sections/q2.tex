@@ -89,6 +89,7 @@ and with a weight matrix \( \mathbf{W}_{m \times m} \) defined as
 \begin{equation*}
     \mathbf{W}_{m \times m}
     =
+    \frac{1}{2}
     \begin{bmatrix}
         w^{(1)} & 0       & \cdots & 0       \\
         0       & w^{(2)} & \cdots & 0       \\
@@ -101,6 +102,7 @@ and with a weight matrix \( \mathbf{W}_{m \times m} \) defined as
      &
     {(\mathbf{X} \boldsymbol{\theta} - \mathbf{y})}^\top \mathbf{W} (\mathbf{X} \boldsymbol{\theta} - \mathbf{y})
     \\ & =
+    \frac{1}{2}
     \begin{bmatrix}
         {\left(\mathbf{x}^{(1)}\right)}^\top \boldsymbol{\theta} - y^{(1)} \\
         {\left(\mathbf{x}^{(2)}\right)}^\top \boldsymbol{\theta} - y^{(2)} \\
@@ -120,6 +122,7 @@ and with a weight matrix \( \mathbf{W}_{m \times m} \) defined as
         {\left(\mathbf{x}^{(m)}\right)}^\top \boldsymbol{\theta} - y^{(m)}
     \end{bmatrix}
     \\ & =
+    \frac{1}{2}
     \begin{bmatrix}
         {\left(\mathbf{x}^{(1)}\right)}^\top \boldsymbol{\theta} - y^{(1)} \\
         {\left(\mathbf{x}^{(2)}\right)}^\top \boldsymbol{\theta} - y^{(2)} \\
@@ -133,6 +136,7 @@ and with a weight matrix \( \mathbf{W}_{m \times m} \) defined as
         w^{(m)}{\left({\left(\mathbf{x}^{(m)}\right)}^\top \boldsymbol{\theta} - y^{(m)}\right)}
     \end{bmatrix}
     \\ & =
+    \frac{1}{2}
     \Bigg [
         w^{(1)} {\left({\left(\mathbf{x}^{(1)}\right)}^\top \boldsymbol{\theta} - y^{(1)}\right)}^\top \left({\left(\mathbf{x}^{(1)}\right)}^\top \boldsymbol{\theta} - y^{(1)}\right)
     \\ & \qquad +
@@ -142,9 +146,11 @@ and with a weight matrix \( \mathbf{W}_{m \times m} \) defined as
         w^{(m)} {\left({\left(\mathbf{x}^{(m)}\right)}^\top \boldsymbol{\theta} - y^{(m)}\right)}^\top \left({\left(\mathbf{x}^{(m)}\right)}^\top \boldsymbol{\theta} - y^{(m)} \right)
         \Bigg ]
     \\ & =
+    \frac{1}{2}
     \sum_{i=1}^{m}
     w^{(i)} {\left({\left(\mathbf{x}^{(i)}\right)}^\top \boldsymbol{\theta} - y^{(i)}\right)}^\top \left({\left(\mathbf{x}^{(i)}\right)}^\top \boldsymbol{\theta} - y^{(i)} \right)
     =
+    \frac{1}{2}
     \sum_{i=1}^{m}
     w^{(i)} {\left(\boldsymbol{\theta}^\top \mathbf{x}^{(i)}-y^{(i)}\right)}^{2}
     =
@@ -169,7 +175,7 @@ The gradient of the loss function \( \nabla_{\boldsymbol{\theta}} \mathcal{L}(\b
     \right)
     =
     \sum_{i=1}^{m}
-    w^{(i)} \mathbf{x}^{(i)} \left(\boldsymbol{\theta}^\top \mathbf{x}^{(i)}-y^{(i)}\right)
+    w^{(i)} \left(\boldsymbol{\theta}^\top \mathbf{x}^{(i)}-y^{(i)}\right) \mathbf{x}^{(i)}
     =
     \mathbf{X}^\top \mathbf{W} (\mathbf{X} \boldsymbol{\theta} - \mathbf{y})
 \end{align*}
