@@ -39,7 +39,16 @@ The usual logistic function is given by
      & =
     h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right) \mathbf{x}^{(i)}
 \end{align*}
-Now, the derivative of the loss function is
+Now, with the loss function as above,
+\begin{equation*}
+    \mathcal{L}(\boldsymbol{\theta})
+    =
+    -\frac{1}{m} \sum_{i=1}^{m}
+    y^{(i)} \log \left(h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
+    +
+    \left(1-y^{(i)}\right) \log \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
+\end{equation*}
+the derivative of the loss function is
 \begin{align*}
     \implies
     \frac{\partial}{\partial \boldsymbol{\theta}} \mathcal{L}(\boldsymbol{\theta})
@@ -67,16 +76,16 @@ Now, the derivative of the loss function is
     \cdot \cancel{\left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right)}
     \mathbf{x}^{(i)}
     \right)
-    \\ & =
+\end{align*}
+\begin{align*}
+     & =
     -\frac{1}{m} \sum_{i=1}^{m}
     \left(
     y^{(i)} \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right) \mathbf{x}^{(i)}
     -
     \left(1-y^{(i)}\right) h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \mathbf{x}^{(i)}
     \right)
-\end{align*}
-\begin{align*}
-     & =
+    \\ & =
     -\frac{1}{m} \sum_{i=1}^{m}
     \Big(
     y^{(i)} \mathbf{x}^{(i)}
@@ -110,7 +119,7 @@ Now, the derivative of the loss function is
 The Hessian then is
 \begin{align*}
     \implies
-    \mathcal{H}(\boldsymbol{\theta})
+    \mathbf{H}(\boldsymbol{\theta})
      & =
     \frac{\partial^2}{\partial \boldsymbol{\theta}^2} \mathcal{L}(\boldsymbol{\theta})
     =
@@ -125,19 +134,19 @@ The Hessian then is
     \frac{\partial}{\partial \boldsymbol{\theta}} h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \mathbf{x}^{(i)}
     \\ & =
     \frac{1}{m} \sum_{i=1}^{m}
-    h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right) {\mathbf{x}^{(i)}}^\top \mathbf{x}^{(i)}
+    h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right) \mathbf{x}^{(i)} {\mathbf{x}^{(i)}}^\top
 \end{align*}
 \begin{equation*}
     \therefore
     \boxed{
-        \mathcal{H}(\boldsymbol{\theta})
-        =
-        \frac{1}{m} \sum_{i=1}^{m}
-        h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
-        {\lVert \mathbf{x}^{(i)} \rVert}^2
+    \mathbf{H}(\boldsymbol{\theta})
+    =
+    \frac{1}{m} \sum_{i=1}^{m}
+    h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
+    \mathbf{x}^{(i)} {\mathbf{x}^{(i)}}^\top
     }
 \end{equation*}
-From the above expression, we can see that this sum is non-negative, since the coefficients are all non-negative, since the logistic function is bounded between 0 and 1, and that the square function is non-negative, thereby \( \mathcal{H}(\boldsymbol{\theta}) \) is in a positive semidefinite quadratic form.
+From the above expression, we can see that this sum is non-negative, since the coefficients are all non-negative, since the logistic function is bounded between 0 and 1, and that the square function is non-negative, thereby \( \mathbf{H}(\boldsymbol{\theta}) \) is in a positive semidefinite quadratic form.
 Hence, \underline{the Hessian is positive semidefinite}, and the loss function is convex, and has a unique global minimum.
 
 That is, for any vector \( \mathbf{v} \in \mathbb{R}^n \), the quadratic form \( \mathbf{v}^\top \mathbf{H}(\boldsymbol{\theta}) \mathbf{v} \geq 0 \), since
@@ -148,13 +157,22 @@ That is, for any vector \( \mathbf{v} \in \mathbb{R}^n \), the quadratic form \(
     \mathbf{v}^\top
     \left(
     h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
-    {{\lVert \mathbf{x}^{(i)} \rVert}^2}
+    \mathbf{x}^{(i)} {\mathbf{x}^{(i)}}^\top
     \right)
     \mathbf{v}
     \\ & =
     \frac{1}{m} \sum_{i=1}^{m}
     h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
-    {{\lVert \mathbf{x}^{(i)} \rVert}^2}
-    {{\lVert \mathbf{v} \rVert}^2}
+    \mathbf{v}^\top
+    \mathbf{x}^{(i)} {\mathbf{x}^{(i)}}^\top
+    \mathbf{v}
+    \\ & =
+    \frac{1}{m} \sum_{i=1}^{m}
+    h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
+    \left(\mathbf{v}^\top \mathbf{x}^{(i)}\right) {\left(\mathbf{v}^\top \mathbf{x}^{(i)}\right)}^\top
+    \\ & =
+    \frac{1}{m} \sum_{i=1}^{m}
+    h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right)
+    {\left(\mathbf{v}^\top \mathbf{x}^{(i)}\right)}^2
 \end{align*}
-and that the coefficients \( h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right) \geq 0 \), and that \( {{\lVert \mathbf{x}^{(i)} \rVert}^2}{{\lVert \mathbf{v} \rVert}^2} \geq 0 \), thereby the quadratic form is non-negative, and the Hessian is positive semidefinite.
+and that the coefficients \( h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right) \left(1-h_{\boldsymbol{\theta}}\left(\mathbf{x}^{(i)}\right)\right) \geq 0 \), and that \( {\left(\mathbf{v}^\top \mathbf{x}^{(i)}\right)}^2 \geq 0 \), thereby the quadratic form is non-negative, and the Hessian is positive semidefinite.
